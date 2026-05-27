@@ -1,1 +1,271 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Аналітика опитування РВП | УГІ ГУНП</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --police-dark: #0B1A30;
+            --police-blue: #1A365D;
+            --police-light: #2A4D7C;
+            --police-gold: #D4AF37;
+            --text-white: #FFFFFF;
+            --bg-light: #F4F6F9;
+            --danger: #A30000;
+        }
 
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+
+        /* Шапка у поліцейському стилі */
+        header {
+            background: linear-gradient(135deg, var(--police-dark) 0%, var(--police-blue) 100%);
+            color: var(--text-white);
+            padding: 20px 40px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 4px solid var(--police-gold);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        /* Стилізований шеврон/символіка через CSS */
+        .police-badge {
+            width: 50px;
+            height: 60px;
+            background-color: var(--police-gold);
+            clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: var(--police-dark);
+            font-size: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 24px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 30px auto;
+            padding: 0 20px;
+        }
+
+        /* Картки з аналітикою та анімацією */
+        .grid-dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            background: var(--text-white);
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            padding: 20px;
+            border-left: 5px solid var(--police-blue);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+        }
+
+        .card.risk {
+            border-left-color: var(--danger);
+        }
+
+        h3 {
+            color: var(--police-blue);
+            margin-top: 0;
+            border-bottom: 1px solid #E2E8F0;
+            padding-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .metric {
+            font-size: 36px;
+            font-weight: bold;
+            color: var(--police-dark);
+            margin: 15px 0;
+        }
+
+        .risk-list {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .risk-list li {
+            margin-bottom: 10px;
+            line-height: 1.4;
+        }
+
+        /* Анімації */
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 0.9; }
+            50% { transform: scale(1.05); opacity: 1; }
+            100% { transform: scale(1); opacity: 0.9; }
+        }
+
+        /* Інтерактивні кнопки */
+        .btn-tab {
+            background-color: var(--police-blue);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .btn-tab:hover {
+            background-color: var(--police-light);
+            border-bottom: 2px solid var(--police-gold);
+        }
+
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--police-dark);
+            color: #A0AEC0;
+            margin-top: 50px;
+            border-top: 2px solid var(--police-gold);
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-area">
+            <div class="police-badge">UA</div>
+            <div>
+                <h1>Моніторинг морально-психологічного клімату</h1>
+                <small style="color: var(--police-gold)">Управління головної інспекції ГУНП (Дані від 14.05.2026)</small>
+            </div>
+        </div>
+        <div>
+            <button class="btn-tab" onclick="window.print()">Зберегти звіт (PDF)</button>
+        </div>
+    </header>
+
+    <div class="container">
+        
+        <div class="grid-dashboard">
+            <div class="card">
+                <h3>Загальна вибірка</h3>
+                <div class="metric">32 <span style="font-size: 18px; color: #718096;">анкет</span></div>
+                <p>Основне ядро: Співробітники зі стажем понад 10 років (найвища експертність, високий ризик вигорання).</p>
+            </div>
+            <div class="card">
+                <h3>Середня атмосфера</h3>
+                <div class="metric">5.9 / 8</div>
+                <p>Показник стабільний, але присутня внутрішня напруга в лінійних підрозділах (Превенція, СРПП).</p>
+            </div>
+            <div class="card risk">
+                <h3>Критичний ризик звільнень</h3>
+                <div class="metric" style="color: var(--danger);">15.6%</div>
+                <p>Респонденти прямо вказали на намір залишити службу найближчим часом через надмірне навантаження.</p>
+            </div>
+        </div>
+
+        <div class="grid-dashboard" style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));">
+            <div class="card">
+                <h3>Розподіл робочого часу (годин на добу)</h3>
+                <div style="position: relative; height:300px;">
+                    <canvas id="timeChart"></canvas>
+                </div>
+            </div>
+            <div class="card risk">
+                <h3>Головні чинники демотивації персоналу</h3>
+                <div style="position: relative; height:300px;">
+                    <canvas id="demotivationChart"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" style="margin-bottom: 30px; border-left: 5px solid var(--police-gold);">
+            <h3><span style="display:flex; align-items:center; gap:10px;">⚠️ Ключові ризики за висновками УГІ</span></h3>
+            <ul class="risk-list">
+                <li><strong>Дисбаланс робочого часу:</strong> Слідство, СРПП та Превенція працюють від 11 до 24 годин на добу. Показник балансу життя/робота критичний (1-2 бали).</li>
+                <li><strong>Проблеми менеджменту середньої ланки:</strong> Зафіксовано скарги на стиль управління окремих керівників (зокрема, заступника з превенції), ігнорування побутових проблем особового складу.</li>
+                <li><strong>Матеріальний дефіцит:</strong> Системна незадоволеність забезпеченням пально-мастильними матеріалами та ремонтом транспорту, що прямо впливає на виконання функціональних обов'язків.</li>
+            </ul>
+        </div>
+
+    </div>
+
+    <footer>
+        &copy; 2026 Національна поліція України | Ситуаційний аналіз УГІ ГУНП. Суворо для службового використання.
+    </footer>
+
+    <script>
+        // Графік 1: Робочий час
+        const ctxTime = document.getElementById('timeChart').getContext('2d');
+        new Chart(ctxTime, {
+            type: 'bar',
+            data: {
+                labels: ['Норма (8-9 год)', 'Понаднормово (10-12 год)', 'Критично (14-15 год)', 'Добові зміни / 24 год'],
+                datasets: [{
+                    label: 'Кількість співробітників',
+                    data: [6, 15, 6, 5],
+                    backgroundColor: ['#2A4D7C', '#1A365D', '#0B1A30', '#A30000'],
+                    borderWidth: 1,
+                    borderColor: '#D4AF37'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    y: { beginAtZero: true }
+                }
+            }
+        });
+
+        // Графік 2: Демотивація
+        const ctxDemo = document.getElementById('demotivationChart').getContext('2d');
+        new Chart(ctxDemo, {
+            type: 'doughnut',
+            data: {
+                labels: ['Надмірне навантаження', 'Низьке МТЗ / Пальне', 'Несправедливе преміювання', 'Проблеми з керівництвом'],
+                datasets: [{
+                    data: [45, 30, 15, 10],
+                    backgroundColor: ['#0B1A30', '#1A365D', '#D4AF37', '#A30000']
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'right' }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
