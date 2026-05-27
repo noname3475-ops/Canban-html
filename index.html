@@ -14,6 +14,7 @@
             --text-white: #FFFFFF;
             --bg-light: #F4F6F9;
             --danger: #A30000;
+            --danger-glow: rgba(163, 0, 0, 0.15);
         }
 
         body {
@@ -22,6 +23,7 @@
             margin: 0;
             padding: 0;
             color: #333;
+            overflow-x: hidden;
         }
 
         /* Шапка у поліцейському стилі */
@@ -34,6 +36,8 @@
             justify-content: space-between;
             border-bottom: 4px solid var(--police-gold);
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: relative;
+            z-index: 10;
         }
 
         .logo-area {
@@ -42,7 +46,7 @@
             gap: 15px;
         }
 
-        /* Стилізований шеврон/символіка через CSS */
+        /* Шеврон з покращеною пульсацією */
         .police-badge {
             width: 50px;
             height: 60px;
@@ -54,7 +58,7 @@
             font-weight: bold;
             color: var(--police-dark);
             font-size: 20px;
-            animation: pulse 2s infinite;
+            animation: badgePulse 2.5s infinite ease-in-out;
         }
 
         h1 {
@@ -70,7 +74,7 @@
             padding: 0 20px;
         }
 
-        /* Картки з аналітикою та анімацією */
+        /* Сетка приладової панелі */
         .grid-dashboard {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
@@ -78,22 +82,51 @@
             margin-bottom: 30px;
         }
 
+        /* Оновлені картки з плавним проявленням та глянцевим ефектом */
         .card {
             background: var(--text-white);
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             padding: 20px;
             border-left: 5px solid var(--police-blue);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            transition: transform 0.4s cubic-bezier(0.165, 0.84, 0.44, 1), box-shadow 0.4s ease;
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(20px);
+            animation: fadeInUp 0.6s forwards cubic-bezier(0.25, 0.46, 0.45, 0.94);
         }
+
+        /* Затримки появи для створення ефекту черговості */
+        .card:nth-child(1) { animation-delay: 0.1s; }
+        .card:nth-child(2) { animation-delay: 0.2s; }
+        .card:nth-child(3) { animation-delay: 0.3s; }
 
         .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            transform: translateY(-6px);
+            box-shadow: 0 12px 20px rgba(11, 26, 48, 0.12);
         }
 
+        /* Легкий рухливий світловий відблиск при наведенні */
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: -100%;
+            width: 50%; height: 100%;
+            background: linear-gradient(to right, rgba(255,255,255,0) 0%, rgba(255,255,255,0.3) 100%);
+            transform: skewX(-25deg);
+            transition: 0.75s;
+            pointer-events: none;
+        }
+        .card:hover::before {
+            left: 125%;
+        }
+
+        /* Картка ризику з пульсуючою зоною тривоги */
         .card.risk {
             border-left-color: var(--danger);
+            animation: fadeInUp 0.6s forwards, riskGlow 3s infinite ease-in-out;
+            animation-delay: 0.3s, 0.9s;
         }
 
         h3 {
@@ -107,10 +140,12 @@
         }
 
         .metric {
-            font-size: 36px;
+            font-size: 42px;
             font-weight: bold;
             color: var(--police-dark);
             margin: 15px 0;
+            display: flex;
+            align-items: baseline;
         }
 
         .risk-list {
@@ -119,32 +154,52 @@
         }
 
         .risk-list li {
-            margin-bottom: 10px;
-            line-height: 1.4;
+            margin-bottom: 12px;
+            line-height: 1.5;
+            transition: transform 0.2s ease;
+        }
+        
+        .risk-list li:hover {
+            transform: translateX(5px);
         }
 
-        /* Анімації */
-        @keyframes pulse {
-            0% { transform: scale(1); opacity: 0.9; }
-            50% { transform: scale(1.05); opacity: 1; }
-            100% { transform: scale(1); opacity: 0.9; }
+        /* Базові та кастомні CSS анімації */
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
-        /* Інтерактивні кнопки */
+        @keyframes badgePulse {
+            0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+            50% { transform: scale(1.04); box-shadow: 0 0 10px 4px rgba(212, 175, 55, 0.2); }
+            100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.4); }
+        }
+
+        @keyframes riskGlow {
+            0% { box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+            50% { box-shadow: 0 4px 15px var(--danger-glow); border-color: rgba(163,0,0,0.6); }
+            100% { box-shadow: 0 4px 6px rgba(0,0,0,0.05); }
+        }
+
         .btn-tab {
             background-color: var(--police-blue);
             color: white;
-            border: none;
+            border: 1px solid transparent;
             padding: 10px 20px;
             border-radius: 4px;
             cursor: pointer;
             font-weight: bold;
-            transition: background 0.2s;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
         .btn-tab:hover {
             background-color: var(--police-light);
-            border-bottom: 2px solid var(--police-gold);
+            border-color: var(--police-gold);
+            box-shadow: 0 0 10px rgba(214, 175, 87, 0.3);
         }
 
         footer {
@@ -178,29 +233,38 @@
         <div class="grid-dashboard">
             <div class="card">
                 <h3>Загальна вибірка</h3>
-                <div class="metric">32 <span style="font-size: 18px; color: #718096;">анкет</span></div>
+                <div class="metric">
+                    <span class="count-up" data-target="32">0</span>
+                    <span style="font-size: 18px; color: #718096; font-weight: normal; margin-left: 8px;">анкет</span>
+                </div>
                 <p>Основне ядро: Співробітники зі стажем понад 10 років (найвища експертність, високий ризик вигорання).</p>
             </div>
             <div class="card">
                 <h3>Середня атмосфера</h3>
-                <div class="metric">5.9 / 8</div>
+                <div class="metric">
+                    <span class="count-up" data-target="5.9" data-decimals="1">0</span>
+                    <span style="font-size: 22px; color: #718096; font-weight: normal; margin-left: 5px;">/ 8</span>
+                </div>
                 <p>Показник стабільний, але присутня внутрішня напруга в лінійних підрозділах (Превенція, СРПП).</p>
             </div>
             <div class="card risk">
                 <h3>Критичний ризик звільнень</h3>
-                <div class="metric" style="color: var(--danger);">15.6%</div>
+                <div class="metric" style="color: var(--danger);">
+                    <span class="count-up" data-target="15.6" data-decimals="1">0</span>
+                    <span style="font-size: 24px; margin-left: 3px;">%</span>
+                </div>
                 <p>Респонденти прямо вказали на намір залишити службу найближчим часом через надмірне навантаження.</p>
             </div>
         </div>
 
         <div class="grid-dashboard" style="grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));">
-            <div class="card">
+            <div class="card" style="animation-delay: 0.4s;">
                 <h3>Розподіл робочого часу (годин на добу)</h3>
                 <div style="position: relative; height:300px;">
                     <canvas id="timeChart"></canvas>
                 </div>
             </div>
-            <div class="card risk">
+            <div class="card risk" style="animation-delay: 0.5s;">
                 <h3>Головні чинники демотивації персоналу</h3>
                 <div style="position: relative; height:300px;">
                     <canvas id="demotivationChart"></canvas>
@@ -208,7 +272,7 @@
             </div>
         </div>
 
-        <div class="card" style="margin-bottom: 30px; border-left: 5px solid var(--police-gold);">
+        <div class="card" style="margin-bottom: 30px; border-left: 5px solid var(--police-gold); animation-delay: 0.6s;">
             <h3><span style="display:flex; align-items:center; gap:10px;">⚠️ Ключові ризики за висновками УГІ</span></h3>
             <ul class="risk-list">
                 <li><strong>Дисбаланс робочого часу:</strong> Слідство, СРПП та Превенція працюють від 11 до 24 годин на добу. Показник балансу життя/робота критичний (1-2 бали).</li>
@@ -224,25 +288,66 @@
     </footer>
 
     <script>
+        // Анімація поступового підрахунку чисел (Count Up Effect)
+        document.addEventListener('DOMContentLoaded', () => {
+            const counters = document.querySelectorAll('.count-up');
+            
+            counters.forEach(counter => {
+                const target = parseFloat(counter.getAttribute('data-target'));
+                const decimals = parseInt(counter.getAttribute('data-decimals')) || 0;
+                const duration = 1500; // тривалість анімації у мс
+                const startTime = performance.now();
+                
+                const updateCount = (currentTime) => {
+                    const elapsedTime = currentTime - startTime;
+                    if (elapsedTime < duration) {
+                        const progress = elapsedTime / duration;
+                        // Ефект уповільнення в кінці (easeOutQuad)
+                        const easeProgress = progress * (2 - progress);
+                        const currentValue = easeProgress * target;
+                        
+                        counter.textContent = currentValue.toFixed(decimals);
+                        requestAnimationFrame(updateCount);
+                    } else {
+                        counter.textContent = target.toFixed(decimals);
+                    }
+                };
+                
+                requestAnimationFrame(updateCount);
+            });
+        });
+
+        // Конфігурація анімацій для Chart.js
+        const chartAnimationOptions = {
+            duration: 1800,
+            easing: 'easeOutQuart'
+        };
+
         // Графік 1: Робочий час
         const ctxTime = document.getElementById('timeChart').getContext('2d');
         new Chart(ctxTime, {
             type: 'bar',
             data: {
-                labels: ['Норма (8-9 год)', 'Понаднормово (10-12 год)', 'Критично (14-15 год)', 'Добові зміни / 24 год'],
+                labels: ['Норма (8-9 год)', 'Понаднормово (10-12 god)', 'Критично (14-15 god)', 'Добові зміни / 24 год'],
                 datasets: [{
                     label: 'Кількість співробітників',
                     data: [6, 15, 6, 5],
                     backgroundColor: ['#2A4D7C', '#1A365D', '#0B1A30', '#A30000'],
                     borderWidth: 1,
-                    borderColor: '#D4AF37'
+                    borderColor: '#D4AF37',
+                    hoverBackgroundColor: '#D4AF37' // Колір стає золотим при наведенні
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: chartAnimationOptions,
+                plugins: {
+                    legend: { display: false }
+                },
                 scales: {
-                    y: { beginAtZero: true }
+                    y: { beginAtZero: true, grid: { color: '#E2E8F0' } },
+                    x: { grid: { display: false } }
                 }
             }
         });
@@ -255,14 +360,19 @@
                 labels: ['Надмірне навантаження', 'Низьке МТЗ / Пальне', 'Несправедливе преміювання', 'Проблеми з керівництвом'],
                 datasets: [{
                     data: [45, 30, 15, 10],
-                    backgroundColor: ['#0B1A30', '#1A365D', '#D4AF37', '#A30000']
+                    backgroundColor: ['#0B1A30', '#1A365D', '#D4AF37', '#A30000'],
+                    hoverOffset: 12 // Шматочок висувається вперед при наведенні
                 }]
             },
             options: {
                 responsive: true,
                 maintainAspectRatio: false,
+                animation: chartAnimationOptions,
                 plugins: {
-                    legend: { position: 'right' }
+                    legend: { 
+                        position: 'right',
+                        labels: { boxWidth: 15, font: { family: 'Segoe UI' } }
+                    }
                 }
             }
         });
