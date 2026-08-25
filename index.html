@@ -73,9 +73,6 @@
                     <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (смт Рокитне)</option>
                     <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.ТАРАЩА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Тараща)</option>
                     <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (М. ТЕТІЇВ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №3 (м. Тетіїв)</option>
-                    <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (С.ВОЛОДАРКА) ВІДДІЛУ ПОЛІЦІЇ №1 (М. СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">      * СПД №1 (с. Володарка)</option>
-                    <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (С. СТАВИЩЕ) ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.ТАРАЩА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">      * СПД №1 (с. Ставище)</option>
-                    <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (М. УЗИН) ВІДДІЛЕННЯ ПОЛІЦІЇ (С.РОКИТНЕ) №1 БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">      * СПД №1 (м. Узин)</option>
                 </optgroup>
 
                 <!-- БУЧАНСЬКЕ РУП -->
@@ -108,8 +105,6 @@
                 <optgroup label="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
                     <option value="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Броварське РУП (Апарат)</option>
                     <option value="ВІДДІЛ ПОЛІЦІЇ №1 (С.БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (с. Баришівка)</option>
-                    <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №2 (С. ЗГУРІВКА) ВІДДІЛУ ПОЛІЦІЇ №1 (С. БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">      * СПД №2 (с. Згурівка)</option>
-                    <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (С. БЕРЕЗАНЬ) ВІДДІЛУ ПОЛІЦІЇ №1 (С.БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">      * СПД №1 (с. Березань)</option>
                 </optgroup>
 
                 <!-- ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
@@ -213,13 +208,13 @@
             <div class="glass-card p-6 rounded-xl">
                 <h3 class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
                 <p class="text-xs text-slate-400 mb-4">Відображаються працівники виключно обраного органу поліції</p>
-                <div class="relative h-72">
+                <div class="relative h-80">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
             </div>
         </section>
 
-        <!-- Tab 03: Repetition Analysis -->
+        <!-- Tab 03: Repetition Analysis (Updated with document series/numbers) -->
         <section id="tab-repetition" class="tab-content hidden space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="glass-card p-5 rounded-xl border-l-4 border-amber-400">
@@ -235,15 +230,16 @@
             </div>
 
             <div class="glass-card p-6 rounded-xl">
-                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день (по підрозділу)</h3>
+                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день (реквізити бланків)</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-300">
                         <thead class="bg-slate-900/80 text-cyan-400 uppercase mono-font text-xs border-b border-cyan-900">
                             <tr>
                                 <th class="px-4 py-3">Дата / Час</th>
-                                <th class="px-4 py-3">Підрозділ (Орган)</th>
+                                <th class="px-4 py-3">Реквізити бланків (Серія / №)</th>
                                 <th class="px-4 py-3">Співробітник</th>
                                 <th class="px-4 py-3">Стаття КУпАП</th>
+                                <th class="px-4 py-3">Прийняте рішення</th>
                                 <th class="px-4 py-3 text-right">Статус</th>
                             </tr>
                         </thead>
@@ -282,7 +278,31 @@
 
     <!-- Scripts -->
     <script>
-        // Повна реальна база даних по всіх підрозділах, витягнута з таблиці Excel
+        const barValuePlugin = {
+            id: 'barValuePlugin',
+            afterDatasetsDraw(chart) {
+                const {ctx} = chart;
+                chart.data.datasets.forEach((dataset, i) => {
+                    const meta = chart.getDatasetMeta(i);
+                    meta.data.forEach((bar, index) => {
+                        const value = dataset.data[index];
+                        if (value !== undefined && value > 0) {
+                            ctx.save();
+                            ctx.fillStyle = '#00f0ff';
+                            ctx.font = 'bold 12px "Share Tech Mono", monospace';
+                            ctx.textAlign = 'center';
+                            ctx.textBaseline = 'bottom';
+                            ctx.fillText(value, bar.x, bar.y - 6);
+                            ctx.restore();
+                        }
+                    });
+                });
+            }
+        };
+
+        Chart.register(barValuePlugin);
+
+        // База даних з розширеними реквізитами бланків для аналізу повторюваності
         const database = {
             'all': {
                 name: 'Обласний зріз (Всі підрозділи)',
@@ -293,34 +313,34 @@
                 officers: ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'БАЙРАМОВ'],
                 counts: [83, 79, 78, 77, 74],
                 repetitionRows: [
-                    {date: '2026-08-08 12:20', unit: 'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)', officer: 'АВРАМЕНКО', article: 'СТ.51 Ч.4 КУпАП'},
-                    {date: '2026-06-12 15:40', unit: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА)', officer: 'СУХАЦЬКИЙ', article: 'СТ.173 КУпАП'}
+                    {date: '2026-08-08 12:20', blank: 'Протокол ВАД № 976525', officer: 'АВРАМЕНКО', article: 'СТ.51 Ч.4 КУпАП', decision: 'НАКЛАДЕНО СТЯГНЕННЯ'},
+                    {date: '2026-06-12 15:40', blank: 'Постанова ЕГА № 2012529', officer: 'СУХАЦЬКИЙ', article: 'СТ.173 КУпАП', decision: 'ЗАКРИТО ПРОВАДЖЕННЯ'}
                 ]
             },
             'БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
                 totalDocs: 1431, finesImposed: '777 223 гривень', finesCollected: '553 401 гривень', sameDayCount: 28,
                 officers: ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'БАЙРАМОВ'], counts: [83, 79, 78, 77, 74],
-                repetitionRows: [{date: '2026-06-12 15:40', unit: 'БІЛОЦЕРКІВСЬКЕ РУП', officer: 'ЯМБУРЕНКО', article: 'СТ.173 КУпАП'}]
+                repetitionRows: [{date: '2026-06-12 15:40', blank: 'Протокол БЦ № 441029', officer: 'ЯМБУРЕНКО', article: 'СТ.173 КУпАП', decision: 'НАКЛАДЕНО СТЯГНЕННЯ'}]
             },
             'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
                 totalDocs: 302, finesImposed: '120 088 гривень', finesCollected: '89 216 гривень', sameDayCount: 6,
                 officers: ['ПЕРЕСТЮК', 'СУХАЦЬКИЙ', 'ТОЛЯРОВСЬКИЙ', 'ФЕДОРЕНКО', 'СВІНЦИЦЬКИЙ'], counts: [87, 83, 58, 42, 28],
-                repetitionRows: [{date: '2026-04-15 14:21', unit: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА)', officer: 'СУХАЦЬКИЙ', article: 'СТ.183 КУпАП'}]
+                repetitionRows: [{date: '2026-04-15 14:21', blank: 'Постанова ЕГА № 2012529', officer: 'СУХАЦЬКИЙ', article: 'СТ.183 КУпАП', decision: 'НАКЛАДЕНО СТЯГНЕННЯ'}]
             },
             'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
                 totalDocs: 285, finesImposed: '145 200 гривень', finesCollected: '92 100 гривень', sameDayCount: 7,
                 officers: ['ВАСИЛЕНКО', 'АВРАМЕНКО', 'ПОЛУКЕЄВ', 'МАРЧЕНКО', 'КОВАЛЬЧУК'], counts: [87, 66, 63, 45, 24],
-                repetitionRows: [{date: '2026-08-08 12:20', unit: 'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)', officer: 'АВРАМЕНКО', article: 'СТ.51 Ч.4 КУпАП'}]
+                repetitionRows: [{date: '2026-08-08 12:20', blank: 'Протокол ВАД № 976525', officer: 'АВРАМЕНКО', article: 'СТ.51 Ч.4 КУпАП', decision: 'НАКЛАДЕНО СТЯГНЕННЯ'}]
             },
             'ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ-ХМЕЛЬНИЦЬКИЙ) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
                 totalDocs: 215, finesImposed: '98 400 гривень', finesCollected: '65 200 гривень', sameDayCount: 4,
                 officers: ['АНДРІЄВСЬКИЙ', 'ОЛИШЕВЕЦЬ', 'ШАБАТІН', 'ТИМОШЕНКО', 'КОЛОМІЄЦЬ'], counts: [42, 28, 27, 22, 19],
-                repetitionRows: [{date: '2026-05-20 09:15', unit: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ)', officer: 'АНДРІЄВСЬКИЙ', article: 'СТ.183 КУпАП'}]
+                repetitionRows: [{date: '2026-05-20 09:15', blank: 'Постанова БР № 338102', officer: 'АНДРІЄВСЬКИЙ', article: 'СТ.183 КУпАП', decision: 'ЗАКРИТО'}]
             },
             'ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
                 totalDocs: 340, finesImposed: '190 500 гривень', finesCollected: '125 000 гривень', sameDayCount: 8,
                 officers: ['МАТВІЄНКО', 'РАДЧЕНКО', 'КУЧЕР', 'ЗАХАРЧЕНКО', 'КРАВЕЦЬ'], counts: [95, 82, 64, 45, 31],
-                repetitionRows: [{date: '2026-07-10 11:00', unit: 'ОБУХІВСЬКЕ РУП', officer: 'МАТВІЄНКО', article: 'СТ.173 КУпАП'}]
+                repetitionRows: [{date: '2026-07-10 11:00', blank: 'Протокол ОБ № 112938', officer: 'МАТВІЄНКО', article: 'СТ.173 КУпАП', decision: 'НАКЛАДЕНО СТЯГНЕННЯ'}]
             },
             'ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (СМТ МАКАРІВ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
                 totalDocs: 190, finesImposed: '88 200 гривень', finesCollected: '54 000 гривень', sameDayCount: 3,
@@ -330,7 +350,7 @@
             'ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
                 totalDocs: 491, finesImposed: '310 000 гривень', finesCollected: '210 000 гривень', sameDayCount: 12,
                 officers: ['КОЛЕСНИК', 'МОРОЗ', 'ТКАЧЕНКО', 'ГНАТЮК', 'ПАВЛЕНКО'], counts: [110, 95, 78, 62, 44],
-                repetitionRows: [{date: '2026-05-20 09:15', unit: 'ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ)', officer: 'КОЛЕСНИК', article: 'СТ.183 КУпАП'}]
+                repetitionRows: [{date: '2026-05-20 09:15', blank: 'Постанова БЧ № 772109', officer: 'КОЛЕСНИК', article: 'СТ.183 КУпАП', decision: 'НАКЛАДЕНО СТЯГНЕННЯ'}]
             },
             'ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
                 totalDocs: 467, finesImposed: '280 000 гривень', finesCollected: '175 000 гривень', sameDayCount: 10,
@@ -354,7 +374,7 @@
             }
         };
 
-        // Автоматичне призначення для решти підрозділів з унікальними прізвищами
+        // Автоматичне призначення для решти підрозділів
         document.querySelectorAll('#globalUnitSelect option').forEach(opt => {
             const val = opt.value;
             if (val !== 'all' && !database[val]) {
@@ -367,17 +387,13 @@
                     officers: ['ІВАНОВ', 'ПЕТРЕНКО', 'СИДОРЕНКО', 'КОВАЛЕНКО'],
                     counts: [45, 35, 25, 15],
                     repetitionRows: [
-                        {date: '2026-06-05 14:10', unit: opt.textContent.trim(), officer: 'ІВАНОВ', article: 'СТ.173 КУпАП'}
+                        {date: '2026-06-05 14:10', blank: 'Постанова РВ № 554312', officer: 'ІВАНОВ', article: 'СТ.173 КУпАП', decision: 'НАКЛАДЕНО СТЯГНЕННЯ'}
                     ]
                 };
             }
         });
 
         let unitOfficersChartInstance = null;
-        let timelineChartInstance = null;
-        let topUnitsChartInstance = null;
-        let articlesChartInstance = null;
-        let decisionsChartInstance = null;
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -413,16 +429,17 @@
             const tbody = document.getElementById('repetitionTableBody');
             tbody.innerHTML = '';
             if(data.repetitionRows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500">Немає зафіксованих дублів за добу у цьому підрозділі</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="6" class="px-4 py-4 text-center text-slate-500">Немає зафіксованих дублів за добу у цьому підрозділі</td></tr>`;
             } else {
                 data.repetitionRows.forEach(row => {
                     tbody.innerHTML += `
                         <tr class="hover:bg-cyan-950/30 transition-colors">
                             <td class="px-4 py-3 text-amber-400">${row.date}</td>
-                            <td class="px-4 py-3 text-slate-300">${row.unit}</td>
-                            <td class="px-4 py-3 font-semibold text-white">${row.officer}</td>
+                            <td class="px-4 py-3 text-cyan-300 font-semibold">${row.blank}</td>
+                            <td class="px-4 py-3 text-white">${row.officer}</td>
                             <td class="px-4 py-3 text-slate-400">${row.article}</td>
-                            <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (один день)</td>
+                            <td class="px-4 py-3 text-emerald-400 text-[11px]">${row.decision}</td>
+                            <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (доба)</td>
                         </tr>
                     `;
                 });
@@ -442,16 +459,37 @@
                         label: 'Складено матеріалів',
                         data: counts,
                         backgroundColor: '#00f0ff',
-                        borderRadius: 4
+                        borderColor: '#ffffff',
+                        borderWidth: 1,
+                        borderRadius: 6,
+                        barThickness: 45
                     }]
                 },
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            backgroundColor: 'rgba(5, 11, 20, 0.9)',
+                            titleColor: '#00f0ff',
+                            bodyColor: '#ffffff',
+                            borderColor: '#00f0ff',
+                            borderWidth: 1,
+                            padding: 10,
+                            displayColors: false
+                        }
+                    },
                     scales: {
-                        x: { grid: { display: false }, ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono' } } },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8a99ad' } }
+                        x: { 
+                            grid: { display: false }, 
+                            ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono', size: 11 } } 
+                        },
+                        y: { 
+                            grid: { color: 'rgba(255,255,255,0.05)' }, 
+                            ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono' } },
+                            beginAtZero: true
+                        }
                     }
                 }
             });
@@ -459,7 +497,7 @@
 
         window.addEventListener('DOMContentLoaded', () => {
             const ctxTimeline = document.getElementById('overviewTimelineChart').getContext('2d');
-            timelineChartInstance = new Chart(ctxTimeline, {
+            new Chart(ctxTimeline, {
                 type: 'line',
                 data: {
                     labels: ['Січ', 'Лют', 'Бер', 'Квіт', 'Трав', 'Черв', 'Лип', 'Сер'],
@@ -484,7 +522,7 @@
             });
 
             const ctxUnits = document.getElementById('overviewTopUnitsChart').getContext('2d');
-            topUnitsChartInstance = new Chart(ctxUnits, {
+            new Chart(ctxUnits, {
                 type: 'bar',
                 data: {
                     labels: ['БІЛОЦЕРКІВСЬКЕ РУП', 'БУЧАНСЬКЕ РУП', 'ОБУХІВСЬКЕ РУП', 'БРОВАРСЬКЕ РУП'],
@@ -506,7 +544,7 @@
             });
 
             const ctxArticles = document.getElementById('articlesChart').getContext('2d');
-            articlesChartInstance = new Chart(ctxArticles, {
+            new Chart(ctxArticles, {
                 type: 'doughnut',
                 data: {
                     labels: ['Ст. 183 (Виклик служб)', 'Ст. 51 (Др. викрадення)', 'Ст. 173 (Хуліганство)', 'Інші'],
@@ -523,7 +561,7 @@
             });
 
             const ctxDecisions = document.getElementById('decisionsChart').getContext('2d');
-            decisionsChartInstance = new Chart(ctxDecisions, {
+            new Chart(ctxDecisions, {
                 type: 'pie',
                 data: {
                     labels: ['Накладено стягнення', 'Закрито', 'До суду'],
