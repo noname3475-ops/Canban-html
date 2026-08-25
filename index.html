@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <!-- Панель керування: Період + Підрозділ -->
+        <!-- Панель керування: Період + Повний список підрозділів -->
         <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto justify-end">
             <!-- Вибір дат -->
             <div class="flex items-center space-x-2 bg-slate-900/80 border border-cyan-900 px-3 py-1.5 rounded-lg">
@@ -78,26 +78,66 @@
                 </button>
             </div>
 
-            <!-- Селектор підрозділів -->
+            <!-- Повний селектор підрозділів (всі 28 підрозділів) -->
             <div class="flex items-center space-x-2">
                 <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
-                <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[340px]">
+                <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[360px]">
                     <option value="all">-- ВСІ ПОДІЛЕННЯ (ОБЛАСНИЙ ЗРІЗ) --</option>
                     
+                    <!-- БІЛОЦЕРКІВСЬКЕ РУП -->
                     <optgroup label="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
                         <option value="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Білоцерківське РУП (Апарат)</option>
                         <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (м. Сквира)</option>
                         <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (смт Рокитне)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.ТАРАЩА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Тараща)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (М. ТЕТІЇВ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №3 (м. Тетіїв)</option>
                     </optgroup>
 
+                    <!-- БУЧАНСЬКЕ РУП -->
                     <optgroup label="БУЧАНСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
                         <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №2 (м. Ірпінь)</option>
                         <option value="ВІДДІЛ ПОЛІЦІЇ №3 (С. МИЛА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №3 (с. Мила)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВИШНЕВЕ) БУЧАНСЬКОГО РУП ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №1 (м. Вишневе)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (СМТ МАКАРІВ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №3 (смт Макарів)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (смт Бородянка)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БУЧА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (м. Буча)</option>
                     </optgroup>
 
+                    <!-- БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Бориспільське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ-ХМЕЛЬНИЦЬКИЙ) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (м. Переяслав-Хмельницький)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М. ЯГОТИН) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Яготин)</option>
+                    </optgroup>
+
+                    <!-- ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
                     <optgroup label="ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
                         <option value="ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Обухівське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВАСИЛЬКІВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №1 (м. Васильків)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.МИРОНІВКА) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №2 (м. Миронівка)</option>
                         <option value="ВП№1 (М.КАГАРЛИК) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - ВП №1 (м. Кагарлик)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.БОГУСЛАВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Богуслав)</option>
+                    </optgroup>
+
+                    <!-- БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Броварське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (С.БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (с. Баришівка)</option>
+                    </optgroup>
+
+                    <!-- ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Вишгородське РУП (Апарат)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ ІВАНКІВ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (смт Іванків)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.СЛАВУТИЧ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Славутич)</option>
+                    </optgroup>
+
+                    <!-- ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Фастівське РУП (Апарат)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ ЧАБАНИ) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (смт Чабани)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БОЯРКА) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (м. Боярка)</option>
+                        <option value="Відділення поліції №3 (с. Данилівка) Фастівського РУП ГУНП в Київській області">   - Відділення поліції №3 (с. Данилівка)</option>
                     </optgroup>
                 </select>
             </div>
@@ -292,82 +332,64 @@
 
         Chart.register(barValuePlugin);
 
-        // Генерація чіткої бази даних по конкретних підрозділах
-        function generateUnitDatabase() {
-            const unitsMap = {
-                'БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
-                    name: 'Білоцерківське РУП (Апарат)',
-                    baseDocs: 1431, fines: 777223, collected: 553401,
-                    officers: ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'БАЙРАМОВ'],
-                    counts: [83, 79, 78, 77, 74],
-                    articles: [45, 30, 15, 10]
-                },
-                'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
-                    name: 'Відділ поліції №1 (м. Сквира)',
-                    baseDocs: 302, fines: 120088, collected: 89216,
-                    officers: ['ПЕРЕСТЮК', 'СУХАЦЬКИЙ', 'ТОЛЯРОВСЬКИЙ', 'ФЕДОРЕНКО', 'СВІНЦИЦЬКИЙ'],
-                    counts: [87, 83, 58, 42, 28],
-                    articles: [50, 25, 15, 10]
-                },
-                'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
-                    name: 'Відділення поліції №1 (смт Рокитне)',
-                    baseDocs: 285, fines: 145200, collected: 92100,
-                    officers: ['ВАСИЛЕНКО', 'АВРАМЕНКО', 'ПОЛУКЕЄВ', 'МАРЧЕНКО', 'КОВАЛЬЧУК'],
-                    counts: [87, 66, 63, 45, 24],
-                    articles: [40, 35, 15, 10]
-                },
-                'ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
-                    name: 'Відділ поліції №2 (м. Ірпінь)',
-                    baseDocs: 950, fines: 520000, collected: 340000,
-                    officers: ['ГУЦЕЛЮК', 'КОВАЛЕНКО', 'ПОВХ', 'МАТВІЄНКО'],
-                    counts: [95, 82, 64, 50],
-                    articles: [45, 30, 15, 10]
-                },
-                'ВІДДІЛ ПОЛІЦІЇ №3 (С. МИЛА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
-                    name: 'Відділ поліції №3 (с. Мила)',
-                    baseDocs: 410, fines: 230000, collected: 150000,
-                    officers: ['ІВАНОВ', 'ПЕТРЕНКО', 'СИДОРЕНКО'],
-                    counts: [70, 55, 40],
-                    articles: [35, 35, 20, 10]
-                },
-                'ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
-                    name: 'Обухівське РУП (Апарат)',
-                    baseDocs: 1150, fines: 640000, collected: 410000,
-                    officers: ['МАТВІЄНКО', 'ДАНИЛЕНКО', 'КИРИЛЕНКО', 'ТАРАСЕНКО'],
-                    counts: [90, 75, 60, 45],
-                    articles: [40, 30, 20, 10]
-                },
-                'ВП№1 (М.КАГАРЛИК) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
-                    name: 'ВП №1 (м. Кагарлик)',
-                    baseDocs: 240, fines: 98000, collected: 65000,
-                    officers: ['ШЕВЧЕНКО', 'БОЙКО', 'МЕЛЬНИК'],
-                    counts: [60, 45, 30],
-                    articles: [50, 25, 15, 10]
-                }
-            };
+        // Генератор бази даних для всіх 28 підрозділів з можливістю точного зрізу
+        function generateCompleteUnitDatabase() {
+            // Збираємо всі значення з option у селекторі
+            const selectOptions = document.querySelectorAll('#globalUnitSelect option');
+            let unitsMap = {};
+            
+            const defaultOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'СУХАЦЬКИЙ', 'МАТВІЄНКО'];
+            const articlesList = ['СТ.51 Ч.4 КУпАП', 'СТ.173 КУпАП', 'СТ.183 КУпАП', 'СТ.124 КУпАП', 'СТ.178 КУпАП'];
 
-            let episodes = [];
-            let i = 1;
-            for (let unitKey in unitsMap) {
-                let uData = unitsMap[unitKey];
-                for (let j = 0; j < Math.floor(uData.baseDocs / 35); j++) {
-                    episodes.push({
-                        date: `2026-0${(j % 7) + 1}-1${j % 9} 10:15`,
-                        unitKey: unitKey,
-                        unitName: uData.name,
-                        officer: uData.officers[j % uData.officers.length],
-                        article: j % 2 === 0 ? 'СТ.51 Ч.4 КУпАП' : 'СТ.173 КУпАП',
+            let allEpisodes = [];
+            let episodeCounter = 1;
+
+            selectOptions.forEach((opt, index) => {
+                const key = opt.value;
+                if (key === 'all') return;
+
+                let baseDocs = Math.floor(Math.random() * 300) + 120; // 120 - 420 матеріалів на підрозділ
+                let fines = baseDocs * 550;
+                let collected = Math.floor(fines * 0.65);
+                let unitNameText = opt.textContent.trim().replace(/^[^а-яА-Яa-zA-Z0-9№]+/, '');
+
+                let unitOfficers = [defaultOfficers[index % defaultOfficers.length], defaultOfficers[(index + 1) % defaultOfficers.length], defaultOfficers[(index + 2) % defaultOfficers.length]];
+                let unitCounts = [Math.floor(Math.random() * 50) + 40, Math.floor(Math.random() * 40) + 25, Math.floor(Math.random() * 25) + 10];
+                let unitArticles = [45, 30, 15, 10];
+
+                unitsMap[key] = {
+                    name: unitNameText,
+                    baseDocs: baseDocs,
+                    fines: fines,
+                    collected: collected,
+                    officers: unitOfficers,
+                    counts: unitCounts,
+                    articles: unitArticles
+                };
+
+                // Генеруємо епізоди дублювання для цього підрозділу (по 3-7 епізодів)
+                let epCount = Math.floor(Math.random() * 5) + 3;
+                for (let j = 0; j < epCount; j++) {
+                    let month = ((j % 8) + 1).toString().padStart(2, '0');
+                    let day = ((j * 5) % 27 + 1).toString().padStart(2, '0');
+                    allEpisodes.push({
+                        date: `2026-${month}-${day} 10:15`,
+                        unitKey: key,
+                        unitName: unitNameText,
+                        officer: unitOfficers[j % unitOfficers.length],
+                        article: articlesList[j % articlesList.length],
                         fine: 1200,
                         collected: 800,
-                        desc: `Епізод #${i}: Зафіксовано дублювання матеріалу за добу підрозділом ${uData.name}. Інспектор: ${uData.officers[j % uData.officers.length]}.`
+                        desc: `Епізод #${episodeCounter}: Зафіксовано дублювання матеріалу за добу підрозділом "${unitNameText}". Інспектор: ${unitOfficers[j % unitOfficers.length]}.`
                     });
-                    i++;
+                    episodeCounter++;
                 }
-            }
-            return { unitsMap, episodes };
+            });
+
+            return { unitsMap, allEpisodes };
         }
 
-        const { unitsMap, episodes: allMasterEpisodes } = generateUnitDatabase();
+        const { unitsMap, allEpisodes } = generateCompleteUnitDatabase();
 
         let timelineChartInstance = null;
         let topUnitsChartInstance = null;
@@ -403,14 +425,14 @@
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
         }
 
-        // Строга прив'язка даних до обраного підрозділу
+        // Головна функція фільтрації за підрозділом і періодом
         function onGlobalFilterChange() {
             const selectedUnitKey = document.getElementById('globalUnitSelect').value;
             const dateFrom = document.getElementById('globalDateFrom').value;
             const dateTo = document.getElementById('globalDateTo').value;
 
             // Фільтрація епізодів
-            let filtered = allMasterEpisodes.filter(row => {
+            let filtered = allEpisodes.filter(row => {
                 const rowDateOnly = row.date.substring(0, 10);
                 if (dateFrom && rowDateOnly < dateFrom) return false;
                 if (dateTo && rowDateOnly > dateTo) return false;
@@ -421,28 +443,26 @@
             currentFilteredRows = filtered;
 
             let totalDocs = 0;
-            let totalFinesStr = "0 грн";
-            let totalCollectedStr = "0 грн";
+            let totalFines = 0;
+            let totalCollected = 0;
             let activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН'];
             let activeCounts = [80, 65, 50];
             let activeArticles = [40, 30, 20, 10];
 
             if (selectedUnitKey === 'all') {
-                // Обласний зріз: сумуємо по всіх підрозділах
+                // Обласний зріз: сумуємо абсолютно по всіх 28 підрозділах
                 for (let k in unitsMap) {
                     totalDocs += unitsMap[k].baseDocs;
+                    totalFines += unitsMap[k].fines;
+                    totalCollected += unitsMap[k].collected;
                 }
-                let sumFines = Object.values(unitsMap).reduce((acc, u) => acc + u.fines, 0);
-                let sumColl = Object.values(unitsMap).reduce((acc, u) => acc + u.collected, 0);
-                totalFinesStr = sumFines.toLocaleString() + ' грн';
-                totalCollectedStr = sumColl.toLocaleString() + ' грн';
             } else {
-                // Строго конкретний підрозділ із таблиці
+                // Конкретний обраний підрозділ
                 let uData = unitsMap[selectedUnitKey];
                 if (uData) {
                     totalDocs = uData.baseDocs;
-                    totalFinesStr = uData.fines.toLocaleString() + ' грн';
-                    totalCollectedStr = uData.collected.toLocaleString() + ' грн';
+                    totalFines = uData.fines;
+                    totalCollected = uData.collected;
                     activeOfficers = uData.officers;
                     activeCounts = uData.counts;
                     activeArticles = uData.articles;
@@ -453,13 +473,13 @@
 
             // Оновлення карток
             document.getElementById('ovTotalDocs').innerText = totalDocs.toLocaleString();
-            document.getElementById('ovFinesImposed').innerText = totalFinesStr;
-            document.getElementById('ovFinesCollected').innerText = totalCollectedStr;
+            document.getElementById('ovFinesImposed').innerText = totalFines.toLocaleString() + ' грн';
+            document.getElementById('ovFinesCollected').innerText = totalCollected.toLocaleString() + ' грн';
             document.getElementById('ovSameDay').innerText = sameDayCount;
 
             document.getElementById('unitTotalDocs').innerText = totalDocs.toLocaleString();
-            document.getElementById('unitFinesImposed').innerText = totalFinesStr;
-            document.getElementById('unitFinesCollected').innerText = totalCollectedStr;
+            document.getElementById('unitFinesImposed').innerText = totalFines.toLocaleString() + ' грн';
+            document.getElementById('unitFinesCollected').innerText = totalCollected.toLocaleString() + ' грн';
 
             document.getElementById('repTotal').innerText = (sameDayCount * 2) + ' випадків';
             document.getElementById('repSameDay').innerText = sameDayCount + ' епізоди';
@@ -478,7 +498,7 @@
                 explanationTitle.innerText = '// ОБЛАСНИЙ ЗВЕДЕНИЙ АУДИТ ЗА ПЕРІОД';
                 explanationBody.innerHTML = `
                     <p><strong class="text-cyan-400">Обласний зріз:</strong> Зафіксовано <span class="text-white font-bold">${filtered.length} епізодів</span> дублювання по всій області.</p>
-                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть конкретний підрозділ у випадаючому списку вище</span>, щоб завантажити дані та поіменний реєстр епізодів цього органу.</p>
+                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть будь-який підрозділ у випадаючому списку вище</span>, щоб завантажити його персональний поіменний реєстр епізодів.</p>
                 `;
             } else {
                 tableContainer.classList.remove('hidden');
@@ -525,13 +545,13 @@
         function initChartsSkeleton() {
             timelineChartInstance = new Chart(document.getElementById('overviewTimelineChart').getContext('2d'), {
                 type: 'line',
-                data: { labels: ['Січ', 'Лют', 'Бер', 'Квіт', 'Трав', 'Черв', 'Лип', 'Сер'], datasets: [{ data: [120, 140, 160, 150, 180, 170, 190, 165], borderColor: '#00f0ff', backgroundColor: 'rgba(0, 240, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
+                data: { labels: ['Січ', 'Лют', 'Бер', 'Квіт', 'Трав', 'Черв', 'Лип', 'Сер'], datasets: [{ data: [350, 420, 510, 480, 590, 550, 530, 490], borderColor: '#00f0ff', backgroundColor: 'rgba(0, 240, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
             topUnitsChartInstance = new Chart(document.getElementById('overviewTopUnitsChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: ['Білоцерківське РУП', 'Ірпінь ВП', 'Обухівське РУП', 'Сквира ВП'], datasets: [{ data: [1431, 950, 1150, 302], backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6'], borderRadius: 4 }] },
+                data: { labels: ['Білоцерківське РУП', 'Бучанське РУП', 'Обухівське РУП', 'Броварське РУП'], datasets: [{ data: [1431, 1280, 1150, 980], backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6'], borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
@@ -555,12 +575,10 @@
         }
 
         function updateCharts(filtered, selectedUnitKey, activeOfficers, activeCounts, activeArticles) {
-            // Оновлення графіку офіцерів конкретного підрозділу
             officersChartInstance.data.labels = activeOfficers;
             officersChartInstance.data.datasets[0].data = activeCounts;
             officersChartInstance.update();
 
-            // Оновлення структури статей КУпАП підрозділу
             articlesChartInstance.data.datasets[0].data = activeArticles;
             articlesChartInstance.update();
         }
