@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <!-- Панель керування: Період + Повний список підрозділів -->
+        <!-- Панель керування: Період + Підрозділ -->
         <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto justify-end">
             <!-- Вибір дат -->
             <div class="flex items-center space-x-2 bg-slate-900/80 border border-cyan-900 px-3 py-1.5 rounded-lg">
@@ -78,7 +78,7 @@
                 </button>
             </div>
 
-            <!-- Повний селектор підрозділів (всі 28 підрозділів) -->
+            <!-- Повний селектор підрозділів (усі 28 підрозділів) -->
             <div class="flex items-center space-x-2">
                 <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
                 <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[360px]">
@@ -226,7 +226,7 @@
 
             <div class="glass-card p-6 rounded-xl">
                 <h3 class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
-                <p class="text-xs text-slate-400 mb-4">Відображаються працівники виключно обраного органу поліції</p>
+                <p class="text-xs text-slate-400 mb-4">Працівники виключно обраного органу поліції</p>
                 <div class="relative h-80">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
@@ -261,7 +261,7 @@
 
             <!-- Блок таблиці реєстру -->
             <div id="repetitionTableContainer" class="glass-card p-6 rounded-xl hidden">
-                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день</h3>
+                <h3 id="tableTitle" class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день</h3>
                 <div class="overflow-x-auto max-h-[420px]">
                     <table class="w-full text-left text-sm text-slate-300 relative">
                         <thead class="bg-slate-900/95 text-cyan-400 uppercase mono-font text-xs border-b border-cyan-900 sticky top-0 z-10">
@@ -332,30 +332,49 @@
 
         Chart.register(barValuePlugin);
 
-        // Генератор бази даних для всіх 28 підрозділів з можливістю точного зрізу
+        // Генератор унікальних і чітко ізольованих даних для ВСІХ 28 підрозділів
         function generateCompleteUnitDatabase() {
-            // Збираємо всі значення з option у селекторі
             const selectOptions = document.querySelectorAll('#globalUnitSelect option');
             let unitsMap = {};
-            
-            const defaultOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'СУХАЦЬКИЙ', 'МАТВІЄНКО'];
-            const articlesList = ['СТ.51 Ч.4 КУпАП', 'СТ.173 КУпАП', 'СТ.183 КУпАП', 'СТ.124 КУпАП', 'СТ.178 КУпАП'];
-
             let allEpisodes = [];
             let episodeCounter = 1;
+
+            const surnamePool = [
+                'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'СУХАЦЬКИЙ', 'МАТВІЄНКО', 
+                'КОЛЕСНИК', 'ЯМБУРЕНКО', 'ПОВХ', 'ДАНИЛЕНКО', 'КИРИЛЕНКО', 
+                'ТАРАСЕНКО', 'ПЕРЕСТЮК', 'ВАСИЛЕНКО', 'АВРАМЕНКО', 'МАРЧЕНКО', 
+                'КОВАЛЬЧУК', 'ШЕВЧЕНКО', 'БОЙКО', 'МЕЛЬНИК', 'СИДОРЕНКО',
+                'ПЕТРЕНКО', 'ІВАНОВ', 'ТОЛЯРОВСЬКИЙ', 'ФЕДОРЕНКО', 'СВІНЦИЦЬКИЙ'
+            ];
+
+            const articlesList = ['СТ.51 Ч.4 КУпАП', 'СТ.173 КУпАП', 'СТ.183 КУпАП', 'СТ.124 КУпАП', 'СТ.178 КУпАП'];
 
             selectOptions.forEach((opt, index) => {
                 const key = opt.value;
                 if (key === 'all') return;
 
-                let baseDocs = Math.floor(Math.random() * 300) + 120; // 120 - 420 матеріалів на підрозділ
-                let fines = baseDocs * 550;
-                let collected = Math.floor(fines * 0.65);
                 let unitNameText = opt.textContent.trim().replace(/^[^а-яА-Яa-zA-Z0-9№]+/, '');
+                let baseDocs = Math.floor(Math.sin(index + 1) * 150 + 250); // від 100 до 400 матеріалів
+                let fines = baseDocs * 520;
+                let collected = Math.floor(fines * 0.62);
 
-                let unitOfficers = [defaultOfficers[index % defaultOfficers.length], defaultOfficers[(index + 1) % defaultOfficers.length], defaultOfficers[(index + 2) % defaultOfficers.length]];
-                let unitCounts = [Math.floor(Math.random() * 50) + 40, Math.floor(Math.random() * 40) + 25, Math.floor(Math.random() * 25) + 10];
-                let unitArticles = [45, 30, 15, 10];
+                // Унікальні інспектори для кожного окремого підрозділу
+                let off1 = surnamePool[(index * 3) % surnamePool.length];
+                let off2 = surnamePool[(index * 3 + 1) % surnamePool.length];
+                let off3 = surnamePool[(index * 3 + 2) % surnamePool.length];
+                let unitOfficers = [off1, off2, off3];
+                let unitCounts = [
+                    Math.floor(baseDocs * 0.4), 
+                    Math.floor(baseDocs * 0.35), 
+                    Math.floor(baseDocs * 0.25)
+                ];
+
+                let unitArticles = [
+                    Math.floor(baseDocs * 0.4), 
+                    Math.floor(baseDocs * 0.3), 
+                    Math.floor(baseDocs * 0.2), 
+                    Math.floor(baseDocs * 0.1)
+                ];
 
                 unitsMap[key] = {
                     name: unitNameText,
@@ -367,20 +386,23 @@
                     articles: unitArticles
                 };
 
-                // Генеруємо епізоди дублювання для цього підрозділу (по 3-7 епізодів)
-                let epCount = Math.floor(Math.random() * 5) + 3;
+                // Генерація персональних епізодів (3-8 епізодів) суворо для цього підрозділу
+                let epCount = (index % 5) + 4;
                 for (let j = 0; j < epCount; j++) {
                     let month = ((j % 8) + 1).toString().padStart(2, '0');
-                    let day = ((j * 5) % 27 + 1).toString().padStart(2, '0');
+                    let day = ((j * 4 + index) % 27 + 1).toString().padStart(2, '0');
+                    let assignedOfficer = unitOfficers[j % unitOfficers.length];
+                    let assignedArticle = articlesList[j % articlesList.length];
+
                     allEpisodes.push({
                         date: `2026-${month}-${day} 10:15`,
                         unitKey: key,
                         unitName: unitNameText,
-                        officer: unitOfficers[j % unitOfficers.length],
-                        article: articlesList[j % articlesList.length],
+                        officer: assignedOfficer,
+                        article: assignedArticle,
                         fine: 1200,
                         collected: 800,
-                        desc: `Епізод #${episodeCounter}: Зафіксовано дублювання матеріалу за добу підрозділом "${unitNameText}". Інспектор: ${unitOfficers[j % unitOfficers.length]}.`
+                        desc: `Епізод #${episodeCounter}: Зафіксовано дублювання матеріалу за добу підрозділом "${unitNameText}". Інспектор: ${assignedOfficer}. Стаття: ${assignedArticle}.`
                     });
                     episodeCounter++;
                 }
@@ -425,7 +447,7 @@
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
         }
 
-        // Головна функція фільтрації за підрозділом і періодом
+        // Сувора фільтрація та оновлення всіх даних за обраним підрозділом і періодом
         function onGlobalFilterChange() {
             const selectedUnitKey = document.getElementById('globalUnitSelect').value;
             const dateFrom = document.getElementById('globalDateFrom').value;
@@ -445,19 +467,22 @@
             let totalDocs = 0;
             let totalFines = 0;
             let totalCollected = 0;
-            let activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН'];
-            let activeCounts = [80, 65, 50];
-            let activeArticles = [40, 30, 20, 10];
+            let activeOfficers = [];
+            let activeCounts = [];
+            let activeArticles = [];
 
             if (selectedUnitKey === 'all') {
-                // Обласний зріз: сумуємо абсолютно по всіх 28 підрозділах
+                // Обласний зріз
                 for (let k in unitsMap) {
                     totalDocs += unitsMap[k].baseDocs;
                     totalFines += unitsMap[k].fines;
                     totalCollected += unitsMap[k].collected;
                 }
+                activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК'];
+                activeCounts = [120, 110, 95, 85];
+                activeArticles = [40, 30, 20, 10];
             } else {
-                // Конкретний обраний підрозділ
+                // Суворо обраний підрозділ
                 let uData = unitsMap[selectedUnitKey];
                 if (uData) {
                     totalDocs = uData.baseDocs;
@@ -492,18 +517,20 @@
             const tableContainer = document.getElementById('repetitionTableContainer');
             const explanationTitle = document.getElementById('explanationTitle');
             const explanationBody = document.getElementById('repetitionExplanation');
+            const tableTitle = document.getElementById('tableTitle');
 
             if (selectedUnitKey === 'all') {
                 tableContainer.classList.add('hidden');
                 explanationTitle.innerText = '// ОБЛАСНИЙ ЗВЕДЕНИЙ АУДИТ ЗА ПЕРІОД';
                 explanationBody.innerHTML = `
                     <p><strong class="text-cyan-400">Обласний зріз:</strong> Зафіксовано <span class="text-white font-bold">${filtered.length} епізодів</span> дублювання по всій області.</p>
-                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть будь-який підрозділ у випадаючому списку вище</span>, щоб завантажити його персональний поіменний реєстр епізодів.</p>
+                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть конкретний підрозділ у випадаючому списку вище</span>, щоб переглянути його унікальний поіменний реєстр епізодів.</p>
                 `;
             } else {
                 tableContainer.classList.remove('hidden');
                 let unitName = unitsMap[selectedUnitKey] ? unitsMap[selectedUnitKey].name : 'Підрозділ';
                 explanationTitle.innerText = `// РЕЄСТР ЕПІЗОДІВ: ${unitName}`;
+                tableTitle.innerText = `// РЕЄСТР ЕПІЗОДІВ З ПОВТОРНИМ СКЛАДАННЯМ В ОДИН ДЕНЬ: ${unitName}`;
 
                 const tbody = document.getElementById('repetitionTableBody');
                 tbody.innerHTML = '';
