@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GIDEON // Analytics Core - Навантаження на підрозділи</title>
+    <title>Аналітика навантаження // УГІ ГУНП в Київській області</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -56,13 +56,13 @@
         <div class="flex items-center space-x-4">
             <div class="w-3 h-3 bg-cyan-400 rounded-full animate-ping"></div>
             <div>
-                <h1 class="mono-font text-xl font-bold tracking-wider text-cyan-400 neon-text">GIDEON // ADMIN-CORE</h1>
-                <p class="text-xs text-slate-400 tracking-widest uppercase">Моніторинг навантаження та адмінпрактики</p>
+                <h1 class="mono-font text-base sm:text-lg font-bold tracking-wider text-cyan-400 neon-text">СЕКТОР АНАЛІТИЧНОЇ РОБОТИ УГІ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ</h1>
+                <p class="text-xs text-slate-400 tracking-widest uppercase">Моніторинг навантаження та адмінпрактики особового складу</p>
             </div>
         </div>
         <div class="flex items-center space-x-6 mt-2 sm:mt-0">
             <div class="text-right hidden md:block">
-                <div class="mono-font text-xs text-cyan-300">ГУНП В КИЇВСЬКІЙ ОБЛАСТІ</div>
+                <div class="mono-font text-xs text-cyan-300">ПІДРОЗДІЛ МОНІТОРИНГУ</div>
                 <div class="text-[10px] text-slate-500">СТАТУС: <span class="text-emerald-400 font-bold">АКТИВНО</span></div>
             </div>
             <div class="mono-font bg-cyan-950/60 border border-cyan-800/60 px-3 py-1.5 rounded text-xs text-cyan-300">
@@ -242,12 +242,11 @@
 
     <!-- Footer -->
     <footer class="glass-card border-t border-cyan-900/50 py-4 px-6 text-center text-xs text-slate-500 mono-font">
-        GIDEON ANALYTICAL ENGINE // SECURE POLICE SYSTEM KIEV REGION // ALL RIGHTS RESERVED
+        СЕКТОР АНАЛІТИЧНОЇ РОБОТИ УГІ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ // СИСТЕМА МОНІТОРИНГУ НАВАНТАЖЕННЯ // ВСІ ПРАВА ЗАХИЩЕНІ
     </footer>
 
     <!-- Scripts -->
     <script>
-        // База даних співробітників в розрізі підрозділів (симуляція зв'язку з Excel-даними)
         const unitDatabase = {
             'skvyra': {
                 totalDocs: 412,
@@ -267,7 +266,7 @@
                 totalDocs: 1280,
                 avgFine: '₴ 1,510',
                 status: 'ВИСОКИЙ',
-                officers: ['КОЛЕСНИК', 'МОРОЗ', 'ТКАЧЕНКО', 'ГНАТЮК', 'ПAVLENKO'],
+                officers: ['КОЛЕСНИК', 'МОРОЗ', 'ТКАЧЕНКО', 'ГНАТЮК', 'ПАВЛЕНКО'],
                 counts: [62, 51, 44, 37, 29]
             },
             'obukhiv': {
@@ -293,14 +292,12 @@
             activeBtn.classList.remove('glass-card', 'text-slate-400');
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
 
-            // Якщо перейшли на вкладку підрозділів — ініціалізуємо графік з поточним вибором
             if (tabId === 'units' && !unitOfficersChartInstance) {
                 updateUnitData();
             }
         }
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Загальний таймлайн
             const ctxTimeline = document.getElementById('overviewTimelineChart').getContext('2d');
             new Chart(ctxTimeline, {
                 type: 'line',
@@ -326,7 +323,6 @@
                 }
             });
 
-            // Топ підрозділів (загальний)
             const ctxUnits = document.getElementById('overviewTopUnitsChart').getContext('2d');
             new Chart(ctxUnits, {
                 type: 'bar',
@@ -349,7 +345,6 @@
                 }
             });
 
-            // Статті КУпАП
             const ctxArticles = document.getElementById('articlesChart').getContext('2d');
             new Chart(ctxArticles, {
                 type: 'doughnut',
@@ -367,7 +362,6 @@
                 }
             });
 
-            // Рішення
             const ctxDecisions = document.getElementById('decisionsChart').getContext('2d');
             new Chart(ctxDecisions, {
                 type: 'pie',
@@ -386,17 +380,14 @@
             });
         });
 
-        // Функція динамічного оновлення даних та графіку поліцейських підрозділу
         function updateUnitData() {
             const selectKey = document.getElementById('unitSelect').value;
             const data = unitDatabase[selectKey];
 
-            // Оновлюємо текстові KPI на вкладці
             document.getElementById('unitTotalDocs').innerText = data.totalDocs;
             document.getElementById('unitAvgFine').innerText = data.avgFine;
             document.getElementById('unitWorkloadStatus').innerText = data.status;
 
-            // Оновлюємо або створюємо заново графік поліцейських для цього підрозділу
             const ctxOfficers = document.getElementById('unitOfficersChart').getContext('2d');
             
             if (unitOfficersChartInstance) {
