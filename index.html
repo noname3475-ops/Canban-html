@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Аналітика навантаження та повторюваності // УГІ ГУНП в Київській області</title>
+    <title>Аналітика навантаження // УГІ ГУНП в Київській області</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js -->
@@ -52,22 +52,23 @@
 <body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
 
     <!-- Header -->
-    <header class="glass-card border-b border-cyan-900/50 sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between">
+    <header class="glass-card border-b border-cyan-900/50 sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-3 h-3 bg-cyan-400 rounded-full animate-ping"></div>
             <div>
-                <h1 class="mono-font text-base sm:text-lg font-bold tracking-wider text-cyan-400 neon-text">СЕКТОР АНАЛІТИЧНОЇ РОБОТИ УГІ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ</h1>
-                <p class="text-xs text-slate-400 tracking-widest uppercase">Аудит навантаження та аналіз повторюваності адмінматеріалів</p>
+                <h1 class="mono-font text-sm sm:text-base font-bold tracking-wider text-cyan-400 neon-text">СЕКТОР АНАЛІТИЧНОЇ РОБОТИ УГІ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ</h1>
+                <p class="text-[11px] text-slate-400 tracking-widest uppercase">Аудит навантаження та аналіз повторюваності адмінматеріалів</p>
             </div>
         </div>
-        <div class="flex items-center space-x-6 mt-2 sm:mt-0">
-            <div class="text-right hidden md:block">
-                <div class="mono-font text-xs text-cyan-300">ПІДРОЗДІЛ МОНІТОРИНГУ</div>
-                <div class="text-[10px] text-slate-500">СТАТУС: <span class="text-emerald-400 font-bold">АКТИВНО</span></div>
-            </div>
-            <div class="mono-font bg-cyan-950/60 border border-cyan-800/60 px-3 py-1.5 rounded text-xs text-cyan-300">
-                БАЗА ДАНИХ: 2026 // ОНОВЛЕНО
-            </div>
+        <!-- Глобальний селектор підрозділу -->
+        <div class="flex items-center space-x-3 w-full lg:w-auto">
+            <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
+            <select id="globalUnitSelect" onchange="onGlobalUnitChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full lg:w-[380px]">
+                <option value="all">-- ВСІ ПОДІЛЕННЯ (ОБЛАСНИЙ ЗРІЗ) --</option>
+                <option value="skvyra">ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА)</option>
+                <option value="rokytne">ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)</option>
+                <option value="pereyaslav">ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ-ХМЕЛЬНИЦЬКИЙ)</option>
+            </select>
         </div>
     </header>
 
@@ -80,13 +81,13 @@
                 <span>[01] Загальний зріз</span>
             </button>
             <button onclick="switchTab('units')" id="btn-units" class="tab-btn px-4 py-2.5 rounded-lg mono-font text-sm transition-all duration-300 glass-card text-slate-400 hover:text-cyan-300 flex items-center space-x-2">
-                <span>[02] Аналіз по підрозділах та ПИ</span>
+                <span>[02] Особовий склад та навантаження</span>
             </button>
             <button onclick="switchTab('repetition')" id="btn-repetition" class="tab-btn px-4 py-2.5 rounded-lg mono-font text-sm transition-all duration-300 glass-card text-slate-400 hover:text-cyan-300 flex items-center space-x-2">
-                <span>[03] Аналіз повторюваності (Дублі / 1 день)</span>
+                <span>[03] Повторюваність (Дублі / 1 день)</span>
             </button>
             <button onclick="switchTab('infractions')" id="btn-infractions" class="tab-btn px-4 py-2.5 rounded-lg mono-font text-sm transition-all duration-300 glass-card text-slate-400 hover:text-cyan-300 flex items-center space-x-2">
-                <span>[04] Структура КУпАП</span>
+                <span>[04] Структура КУпАП та рішення</span>
             </button>
         </nav>
 
@@ -95,23 +96,23 @@
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
                 <div class="glass-card p-5 rounded-xl border-l-4 border-cyan-400">
                     <p class="text-xs text-slate-400 uppercase mono-font">Всього матеріалів</p>
-                    <h3 class="mono-font text-3xl font-bold text-white mt-2">7,390</h3>
+                    <h3 id="ovTotalDocs" class="mono-font text-3xl font-bold text-white mt-2">7,390</h3>
                     <p class="text-[10px] text-cyan-400 mt-1">▲ Обласна адмінпрактика</p>
                 </div>
-                <div class="glass-card p-5 rounded-xl border-l-4 border-blue-500">
-                    <p class="text-xs text-slate-400 uppercase mono-font">Активних підрозділів</p>
-                    <h3 class="mono-font text-3xl font-bold text-white mt-2">33</h3>
-                    <p class="text-[10px] text-blue-400 mt-1">Органи поліції Київщини</p>
+                <div class="glass-card p-5 rounded-xl border-l-4 border-emerald-400">
+                    <p class="text-xs text-slate-400 uppercase mono-font">Накладено штрафів</p>
+                    <h3 id="ovFinesImposed" class="mono-font text-xl font-bold text-white mt-2">4 221 678 гривень</h3>
+                    <p class="text-[10px] text-emerald-400 mt-1">Загальна сума санкцій</p>
+                </div>
+                <div class="glass-card p-5 rounded-xl border-l-4 border-purple-400">
+                    <p class="text-xs text-slate-400 uppercase mono-font">Стягнено штрафів</p>
+                    <h3 id="ovFinesCollected" class="mono-font text-xl font-bold text-white mt-2">2 300 044 гривень</h3>
+                    <p class="text-[10px] text-purple-400 mt-1">Фактично стягнута сума</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl border-l-4 border-amber-400">
                     <p class="text-xs text-slate-400 uppercase mono-font">Повторні за добу</p>
-                    <h3 class="mono-font text-3xl font-bold text-white mt-2">142</h3>
-                    <p class="text-[10px] text-amber-400 mt-1">Факти складання в один день</p>
-                </div>
-                <div class="glass-card p-5 rounded-xl border-l-4 border-emerald-400">
-                    <p class="text-xs text-slate-400 uppercase mono-font">Стягнено штрафів</p>
-                    <h3 class="mono-font text-3xl font-bold text-white mt-2">₴ 3.15M</h3>
-                    <p class="text-[10px] text-emerald-400 mt-1">Рівень виконання</p>
+                    <h3 id="ovSameDay" class="mono-font text-3xl font-bold text-white mt-2">142</h3>
+                    <p class="text-[10px] text-amber-400 mt-1">Епізоди в один день</p>
                 </div>
             </div>
 
@@ -123,7 +124,7 @@
                     </div>
                 </div>
                 <div class="glass-card p-6 rounded-xl">
-                    <h3 class="mono-font text-sm text-cyan-400 mb-4 tracking-wider uppercase">// Топ-5 підрозділів за навантаженням</h3>
+                    <h3 class="mono-font text-sm text-cyan-400 mb-4 tracking-wider uppercase">// Розподіл матеріалів по підрозділу</h3>
                     <div class="relative h-72">
                         <canvas id="overviewTopUnitsChart"></canvas>
                     </div>
@@ -131,103 +132,65 @@
             </div>
         </section>
 
-        <!-- Tab 02: Units Analysis & Corrected Police Officers Stats -->
+        <!-- Tab 02: Units Analysis & Officers Stats -->
         <section id="tab-units" class="tab-content hidden space-y-6">
-            <div class="glass-card p-6 rounded-xl flex flex-col md:flex-row items-center justify-between gap-4">
-                <div>
-                    <h3 class="mono-font text-sm text-cyan-400 uppercase">// Селектор підрозділу</h3>
-                    <p class="text-xs text-slate-400">Оберіть орган для виведення точної кількості матеріалів по прізвищах</p>
-                </div>
-                <select id="unitSelect" onchange="updateUnitData()" class="bg-slate-900 border border-cyan-800/80 text-cyan-300 text-sm rounded-lg px-4 py-2.5 focus:outline-none focus:border-cyan-400 mono-font w-full md:w-[450px]">
-                    <option value="skvyra">ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА)</option>
-                    <option value="bila_tserkva">БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ</option>
-                    <option value="yagotyn">ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М. ЯГОТИН)</option>
-                    <option value="irpin">ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ)</option>
-                    <option value="tetiiv">ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (М. ТЕТІЇВ)</option>
-                </select>
-            </div>
-
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <div class="glass-card p-5 rounded-xl">
                     <p class="text-xs text-slate-400 uppercase mono-font">Матеріалів у підрозділі</p>
                     <h3 id="unitTotalDocs" class="mono-font text-3xl font-bold text-cyan-300 mt-2">0</h3>
-                    <p class="text-[10px] text-cyan-400 mt-1">Згідно з обліковими даними</p>
+                    <p class="text-[10px] text-cyan-400 mt-1">Вибраний підрозділ</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl">
-                    <p class="text-xs text-slate-400 uppercase mono-font">Середній штраф</p>
-                    <h3 id="unitAvgFine" class="mono-font text-3xl font-bold text-white mt-2">₴ 0</h3>
-                    <p class="text-[10px] text-emerald-400 mt-1">Обласні показники</p>
+                    <p class="text-xs text-slate-400 uppercase mono-font">Сума накладених штрафів</p>
+                    <h3 id="unitFinesImposed" class="mono-font text-xl font-bold text-white mt-2">0 гривень</h3>
+                    <p class="text-[10px] text-emerald-400 mt-1">Поточний підрозділ</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl">
-                    <p class="text-xs text-slate-400 uppercase mono-font">Індекс навантаження</p>
-                    <h3 id="unitWorkloadStatus" class="mono-font text-3xl font-bold text-cyan-400 mt-2">СТАНДАРТ</h3>
-                    <p class="text-[10px] text-cyan-500 mt-1">Розрахунковий коефіцієнт</p>
+                    <p class="text-xs text-slate-400 uppercase mono-font">Сума стягнених штрафів</p>
+                    <h3 id="unitFinesCollected" class="mono-font text-xl font-bold text-white mt-2">0 гривень</h3>
+                    <p class="text-[10px] text-purple-400 mt-1">Поточний підрозділ</p>
                 </div>
             </div>
 
-            <!-- Коригований графік співробітників за прізвищами -->
             <div class="glass-card p-6 rounded-xl">
-                <h3 class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських за точним підрахунком матеріалів</h3>
-                <p class="text-xs text-slate-400 mb-4">Коригований рейтинг інспекторів/офіцерів у вибраному підрозділі</p>
+                <h3 class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
+                <p class="text-xs text-slate-400 mb-4">Відображаються працівники виключно обраного органу поліції</p>
                 <div class="relative h-72">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
             </div>
         </section>
 
-        <!-- Tab 03: Repetition Analysis (Same person, same day highlight) -->
+        <!-- Tab 03: Repetition Analysis -->
         <section id="tab-repetition" class="tab-content hidden space-y-6">
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="glass-card p-5 rounded-xl border-l-4 border-amber-400">
-                    <p class="text-xs text-slate-400 uppercase mono-font">Повторні матеріалу на особу</p>
-                    <h3 class="mono-font text-3xl font-bold text-white mt-2">284 випадки</h3>
-                    <p class="text-[10px] text-amber-400 mt-1">Загальна кількість фіксацій повторних правопорушень</p>
+                    <p class="text-xs text-slate-400 uppercase mono-font">Повторні матеріали на особу</p>
+                    <h3 id="repTotal" class="mono-font text-3xl font-bold text-white mt-2">284 випадки</h3>
+                    <p class="text-[10px] text-amber-400 mt-1">Фіксації повторних правопорушень</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl border-l-4 border-red-500">
-                    <p class="text-xs text-slate-400 uppercase mono-font">Дублювання в один і той самий день</p>
-                    <h3 class="mono-font text-3xl font-bold text-white mt-2">142 епізоди</h3>
-                    <p class="text-[10px] text-red-400 mt-1">Складено кілька матеріалів на одну особу за 24 години</p>
+                    <p class="text-xs text-slate-400 uppercase mono-font">Дублювання в один день</p>
+                    <h3 id="repSameDay" class="mono-font text-3xl font-bold text-white mt-2">142 епізоди</h3>
+                    <p class="text-[10px] text-red-400 mt-1">Кілька матеріалів за 24 години</p>
                 </div>
             </div>
 
             <div class="glass-card p-6 rounded-xl">
-                <div class="flex justify-between items-center mb-6">
-                    <h3 class="mono-font text-sm text-cyan-400 uppercase">// Реєстр епізодів з повторним складанням матеріалів в один день</h3>
-                    <span class="text-xs bg-amber-950 text-amber-300 px-3 py-1 rounded border border-amber-800 mono-font">УВАГА: КОНТРОЛЬ УГІ</span>
-                </div>
+                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день (по підрозділу)</h3>
                 <div class="overflow-x-auto">
                     <table class="w-full text-left text-sm text-slate-300">
                         <thead class="bg-slate-900/80 text-cyan-400 uppercase mono-font text-xs border-b border-cyan-900">
                             <tr>
                                 <th class="px-4 py-3">Дата / Час</th>
                                 <th class="px-4 py-3">Підрозділ (Орган)</th>
-                                <th class="px-4 py-3">Співробітник (Прізвище)</th>
+                                <th class="px-4 py-3">Співробітник</th>
                                 <th class="px-4 py-3">Стаття КУпАП</th>
-                                <th class="px-4 py-3 text-right">Кількість за добу</th>
+                                <th class="px-4 py-3 text-right">Статус</th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-slate-800/60 font-mono text-xs">
-                            <tr class="hover:bg-cyan-950/30 transition-colors">
-                                <td class="px-4 py-3 text-amber-400">2026-08-08 12:20</td>
-                                <td class="px-4 py-3 text-slate-300">ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)</td>
-                                <td class="px-4 py-3 font-semibold text-white">АВРАМЕНКО</td>
-                                <td class="px-4 py-3 text-slate-400">СТ.51 Ч.4 КУпАП</td>
-                                <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (один день)</td>
-                            </tr>
-                            <tr class="hover:bg-cyan-950/30 transition-colors">
-                                <td class="px-4 py-3 text-amber-400">2026-06-12 15:40</td>
-                                <td class="px-4 py-3 text-slate-300">БІЛОЦЕРКІВСЬКЕ РУП ГУНП</td>
-                                <td class="px-4 py-3 font-semibold text-white">ШЕВЧЕНКО</td>
-                                <td class="px-4 py-3 text-slate-400">СТ.173 КУпАП</td>
-                                <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (один день)</td>
-                            </tr>
-                            <tr class="hover:bg-cyan-950/30 transition-colors">
-                                <td class="px-4 py-3 text-amber-400">2026-05-20 09:15</td>
-                                <td class="px-4 py-3 text-slate-300">ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ)</td>
-                                <td class="px-4 py-3 font-semibold text-white">КОЛЕСНИК</td>
-                                <td class="px-4 py-3 text-slate-400">СТ.183 КУпАП</td>
-                                <td class="px-4 py-3 text-right text-red-400 font-bold">3 епізоди (один день)</td>
-                            </tr>
+                        <tbody id="repetitionTableBody" class="divide-y divide-slate-800/60 font-mono text-xs">
+                            <!-- Заповнюється динамічно -->
                         </tbody>
                     </table>
                 </div>
@@ -261,46 +224,65 @@
 
     <!-- Scripts -->
     <script>
-        // Кориговані вивірені дані по прізвищах для кожного підрозділу
-        const unitDatabase = {
+        // База даних з деталізацією по підрозділах
+        const database = {
+            'all': {
+                name: 'Обласний зріз (Всі підрозділи)',
+                totalDocs: 7390,
+                finesImposed: '4 221 678 гривень',
+                finesCollected: '2 300 044 гривень',
+                sameDayCount: 142,
+                officers: ['СУХАЦЬКИЙ', 'АВРАМЕНКО', 'ПЕРЕСТЮК', 'ВАСИЛЕНКО', 'АНДРІЄВСЬКИЙ'],
+                counts: [340, 290, 265, 210, 185],
+                repetitionRows: [
+                    {date: '2026-08-08 12:20', unit: 'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)', officer: 'АВРАМЕНКО', article: 'СТ.51 Ч.4 КУпАП'},
+                    {date: '2026-06-12 15:40', unit: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА)', officer: 'СУХАЦЬКИЙ', article: 'СТ.173 КУпАП'},
+                    {date: '2026-05-20 09:15', unit: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ)', officer: 'АНДРІЄВСЬКИЙ', article: 'СТ.183 КУпАП'}
+                ]
+            },
             'skvyra': {
+                name: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА)',
                 totalDocs: 412,
-                avgFine: '₴ 1,250',
-                status: 'СТАБІЛЬНИЙ',
-                officers: ['СУХАЦЬКИЙ', 'ПЕТРЕНКО', 'МЕЛЬНИК', 'БОНДАР', 'КОВАЛЬЧУК'],
-                counts: [68, 52, 41, 35, 24]
+                finesImposed: '345 200 гривень',
+                finesCollected: '210 500 гривень',
+                sameDayCount: 12,
+                officers: ['ПЕРЕСТЮК', 'СУХАЦЬКИЙ', 'ТОЛЯРОВСЬКИЙ', 'МЕЛЬНИК', 'БОНДАР'],
+                counts: [87, 83, 58, 41, 35],
+                repetitionRows: [
+                    {date: '2026-06-12 15:40', unit: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА)', officer: 'СУХАЦЬКИЙ', article: 'СТ.173 КУпАП'}
+                ]
             },
-            'bila_tserkva': {
-                totalDocs: 1431,
-                avgFine: '₴ 1,680',
-                status: 'ВИСОКИЙ',
-                officers: ['ШЕВЧЕНКО', 'БОЙКО', 'КОВАЛЕНКО', 'ЛИТВИНЕНКО', 'МАРЧЕНКО'],
-                counts: [142, 128, 115, 96, 84]
+            'rokytne': {
+                name: 'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)',
+                totalDocs: 380,
+                finesImposed: '290 400 гривень',
+                finesCollected: '180 200 гривень',
+                sameDayCount: 8,
+                officers: ['ВАСИЛЕНКО', 'АВРАМЕНКО', 'ПОЛУКЕЄВ', 'МАРЧЕНКО', 'КОВАЛЬЧУК'],
+                counts: [87, 66, 63, 45, 30],
+                repetitionRows: [
+                    {date: '2026-08-08 12:20', unit: 'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)', officer: 'АВРАМЕНКО', article: 'СТ.51 Ч.4 КУпАП'}
+                ]
             },
-            'yagotyn': {
-                totalDocs: 645,
-                avgFine: '₴ 1,120',
-                status: 'ПІДВИЩЕНИЙ',
-                officers: ['ІВАНЕНКО', 'ПОВХ', 'ДЯЧЕНКО', 'СИДОРЕНКО', 'ЛУЦЕНКО'],
-                counts: [89, 74, 62, 51, 45]
-            },
-            'irpin': {
-                totalDocs: 491,
-                avgFine: '₴ 1,450',
-                status: 'ВИСОКИЙ',
-                officers: ['КОЛЕСНИК', 'МОРОЗ', 'ТКАЧЕНКО', 'ГНАТЮК', 'ПАВЛЕНКО'],
-                counts: [76, 64, 58, 49, 38]
-            },
-            'tetiiv': {
-                totalDocs: 485,
-                avgFine: '₴ 1,290',
-                status: 'СТАБІЛЬНИЙ',
-                officers: ['МАТВІЄНКО', 'РАДЧЕНКО', 'КУЧЕР', 'ЗАХАРЧЕНКО', 'КРАВЕЦЬ'],
-                counts: [71, 59, 48, 42, 33]
+            'pereyaslav': {
+                name: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ-ХМЕЛЬНИЦЬКИЙ)',
+                totalDocs: 295,
+                finesImposed: '215 000 гривень',
+                finesCollected: '140 000 гривень',
+                sameDayCount: 5,
+                officers: ['АНДРІЄВСЬКИЙ', 'ОЛИШЕВЕЦЬ', 'ШАБАТІН', 'ТИМОШЕНКО', 'КОЛОМІЄЦЬ'],
+                counts: [42, 28, 27, 22, 19],
+                repetitionRows: [
+                    {date: '2026-05-20 09:15', unit: 'ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ)', officer: 'АНДРІЄВСЬКИЙ', article: 'СТ.183 КУпАП'}
+                ]
             }
         };
 
         let unitOfficersChartInstance = null;
+        let timelineChartInstance = null;
+        let topUnitsChartInstance = null;
+        let articlesChartInstance = null;
+        let decisionsChartInstance = null;
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -313,15 +295,76 @@
             const activeBtn = document.getElementById('btn-' + tabId);
             activeBtn.classList.remove('glass-card', 'text-slate-400');
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
+        }
 
-            if (tabId === 'units' && !unitOfficersChartInstance) {
-                updateUnitData();
+        function onGlobalUnitChange() {
+            const selectedKey = document.getElementById('globalUnitSelect').value;
+            const data = database[selectedKey];
+
+            // 1. Оновлення вкладки 01 (Загальний зріз)
+            document.getElementById('ovTotalDocs').innerText = data.totalDocs.toLocaleString();
+            document.getElementById('ovFinesImposed').innerText = data.finesImposed;
+            document.getElementById('ovFinesCollected').innerText = data.finesCollected;
+            document.getElementById('ovSameDay').innerText = data.sameDayCount;
+
+            // 2. Оновлення вкладки 02 (Аналіз підрозділу та поліцейських)
+            document.getElementById('unitTotalDocs').innerText = data.totalDocs.toLocaleString();
+            document.getElementById('unitFinesImposed').innerText = data.finesImposed;
+            document.getElementById('unitFinesCollected').innerText = data.finesCollected;
+
+            updateOfficersChart(data.officers, data.counts);
+
+            // 3. Оновлення вкладки 03 (Повторюваність)
+            document.getElementById('repTotal').innerText = (data.sameDayCount * 2) + ' випадків';
+            document.getElementById('repSameDay').innerText = data.sameDayCount + ' епізоди';
+            
+            const tbody = document.getElementById('repetitionTableBody');
+            tbody.innerHTML = '';
+            data.repetitionRows.forEach(row => {
+                tbody.innerHTML += `
+                    <tr class="hover:bg-cyan-950/30 transition-colors">
+                        <td class="px-4 py-3 text-amber-400">${row.date}</td>
+                        <td class="px-4 py-3 text-slate-300">${row.unit}</td>
+                        <td class="px-4 py-3 font-semibold text-white">${row.officer}</td>
+                        <td class="px-4 py-3 text-slate-400">${row.article}</td>
+                        <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (один день)</td>
+                    </tr>
+                `;
+            });
+        }
+
+        function updateOfficersChart(officers, counts) {
+            const ctx = document.getElementById('unitOfficersChart').getContext('2d');
+            if (unitOfficersChartInstance) {
+                unitOfficersChartInstance.destroy();
             }
+            unitOfficersChartInstance = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: officers,
+                    datasets: [{
+                        label: 'Складено матеріалів',
+                        data: counts,
+                        backgroundColor: '#00f0ff',
+                        borderRadius: 4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: { legend: { display: false } },
+                    scales: {
+                        x: { grid: { display: false }, ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono' } } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8a99ad' } }
+                    }
+                }
+            });
         }
 
         window.addEventListener('DOMContentLoaded', () => {
+            // Ініціалізація графіків огляду
             const ctxTimeline = document.getElementById('overviewTimelineChart').getContext('2d');
-            new Chart(ctxTimeline, {
+            timelineChartInstance = new Chart(ctxTimeline, {
                 type: 'line',
                 data: {
                     labels: ['Січ', 'Лют', 'Бер', 'Квіт', 'Трав', 'Черв', 'Лип', 'Сер'],
@@ -346,13 +389,13 @@
             });
 
             const ctxUnits = document.getElementById('overviewTopUnitsChart').getContext('2d');
-            new Chart(ctxUnits, {
+            topUnitsChartInstance = new Chart(ctxUnits, {
                 type: 'bar',
                 data: {
-                    labels: ['БІЛОЦЕРКІВСЬКЕ РУП', 'ЯГОТИНСЬКЕ ВП', 'ІРПІНЬСКЕ ВП', 'ТЕТІЇВСЬКЕ ВП', 'ВИШГОРОДСЬКЕ РУП'],
+                    labels: ['БІЛОЦЕРКІВСЬКЕ РУП', 'ЯГОТИНСЬКЕ ВП', 'ІРПІНЬСКЕ ВП', 'ТЕТІЇВСЬКЕ ВП'],
                     datasets: [{
-                        data: [1431, 645, 491, 485, 467],
-                        backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6', '#a855f7'],
+                        data: [1431, 645, 491, 485],
+                        backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6'],
                         borderRadius: 4
                     }]
                 },
@@ -368,13 +411,13 @@
             });
 
             const ctxArticles = document.getElementById('articlesChart').getContext('2d');
-            new Chart(ctxArticles, {
+            articlesChartInstance = new Chart(ctxArticles, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Ст. 183 (Виклик служб)', 'Ст. 51 (Др. викрадення)', 'Ст. 173 (Хуліганство)', 'Ст. 152 (Благоустрій)', 'Інші'],
+                    labels: ['Ст. 183 (Виклик служб)', 'Ст. 51 (Др. викрадення)', 'Ст. 173 (Хуліганство)', 'Інші'],
                     datasets: [{
-                        data: [35, 25, 20, 12, 8],
-                        backgroundColor: ['#00f0ff', '#3b82f6', '#8b5cf6', '#10b981', '#1e293b']
+                        data: [40, 25, 20, 15],
+                        backgroundColor: ['#00f0ff', '#3b82f6', '#8b5cf6', '#1e293b']
                     }]
                 },
                 options: {
@@ -385,10 +428,10 @@
             });
 
             const ctxDecisions = document.getElementById('decisionsChart').getContext('2d');
-            new Chart(ctxDecisions, {
+            decisionsChartInstance = new Chart(ctxDecisions, {
                 type: 'pie',
                 data: {
-                    labels: ['Накладено стягнення', 'Закрито провадження', 'На розгляд суду'],
+                    labels: ['Накладено стягнення', 'Закрито', 'До суду'],
                     datasets: [{
                         data: [65, 20, 15],
                         backgroundColor: ['#10b981', '#f59e0b', '#ef4444']
@@ -400,44 +443,10 @@
                     plugins: { legend: { position: 'bottom', labels: { color: '#8a99ad', boxWidth: 12 } } }
                 }
             });
+
+            // Початкове завантаження за замовчуванням
+            onGlobalUnitChange();
         });
-
-        function updateUnitData() {
-            const selectKey = document.getElementById('unitSelect').value;
-            const data = unitDatabase[selectKey];
-
-            document.getElementById('unitTotalDocs').innerText = data.totalDocs;
-            document.getElementById('unitAvgFine').innerText = data.avgFine;
-            document.getElementById('unitWorkloadStatus').innerText = data.status;
-
-            const ctxOfficers = document.getElementById('unitOfficersChart').getContext('2d');
-            
-            if (unitOfficersChartInstance) {
-                unitOfficersChartInstance.destroy();
-            }
-
-            unitOfficersChartInstance = new Chart(ctxOfficers, {
-                type: 'bar',
-                data: {
-                    labels: data.officers,
-                    datasets: [{
-                        label: 'Складено матеріалів',
-                        data: data.counts,
-                        backgroundColor: '#00f0ff',
-                        borderRadius: 4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    plugins: { legend: { display: false } },
-                    scales: {
-                        x: { grid: { display: false }, ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono' } } },
-                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8a99ad' } }
-                    }
-                }
-            });
-        }
     </script>
 </body>
 </html>
