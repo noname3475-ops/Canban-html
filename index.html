@@ -225,9 +225,9 @@
             </div>
 
             <div class="glass-card p-6 rounded-xl">
-                <h3 id="officersSectionTitle" class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
-                <p id="officersSectionDesc" class="text-xs text-slate-400 mb-4">Працівники виключно обраного органу поліції</p>
-                <div class="relative h-80">
+                <h3 id="officersSectionTitle" class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Список особового складу та навантаження</h3>
+                <p id="officersSectionDesc" class="text-xs text-slate-400 mb-4">Порівняння показників працівників обраного підрозділу</p>
+                <div class="relative h-96">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
             </div>
@@ -319,7 +319,7 @@
                         if (value !== undefined && value > 0) {
                             ctx.save();
                             ctx.fillStyle = '#00f0ff';
-                            ctx.font = 'bold 12px "Share Tech Mono", monospace';
+                            ctx.font = 'bold 11px "Share Tech Mono", monospace';
                             ctx.textAlign = 'center';
                             ctx.textBaseline = 'bottom';
                             ctx.fillText(value, bar.x, bar.y - 6);
@@ -360,14 +360,23 @@
                 let fines = baseDocs * 520;
                 let collected = Math.floor(fines * 0.62);
 
-                let off1 = surnamePool[(index * 3) % surnamePool.length];
-                let off2 = surnamePool[(index * 3 + 1) % surnamePool.length];
-                let off3 = surnamePool[(index * 3 + 2) % surnamePool.length];
-                let unitOfficers = [off1, off2, off3];
+                // Розширений штатний список із 6 працівників для кожного підрозділу для детального порівняння
+                let unitOfficers = [
+                    surnamePool[(index * 5) % surnamePool.length],
+                    surnamePool[(index * 5 + 1) % surnamePool.length],
+                    surnamePool[(index * 5 + 2) % surnamePool.length],
+                    surnamePool[(index * 5 + 3) % surnamePool.length],
+                    surnamePool[(index * 5 + 4) % surnamePool.length],
+                    surnamePool[(index * 5 + 7) % surnamePool.length]
+                ];
+
                 let unitCounts = [
-                    Math.floor(baseDocs * 0.4), 
-                    Math.floor(baseDocs * 0.35), 
-                    Math.floor(baseDocs * 0.25)
+                    Math.floor(baseDocs * 0.25),
+                    Math.floor(baseDocs * 0.22),
+                    Math.floor(baseDocs * 0.18),
+                    Math.floor(baseDocs * 0.15),
+                    Math.floor(baseDocs * 0.12),
+                    Math.floor(baseDocs * 0.08)
                 ];
 
                 let unitArticles = [
@@ -445,18 +454,18 @@
         }
 
         function onGlobalFilterQuery(selectedUnitKey) {
-            // Передаємо інформацію у контекст тултипа графіків
             if(officersChartInstance) {
                 officersChartInstance.options.plugins.tooltip.callbacks.title = function(context) {
                     let index = context[0].dataIndex;
                     let officerName = context[0].label;
                     if (selectedUnitKey === 'all') {
-                        // Мапа підрозділів для обласного зрізу
                         const regionalUnits = [
                             "Білоцерківське РУП (Апарат)", 
                             "Відділ поліції №2 (м. Ірпінь)", 
                             "Обухівське РУП (Апарат)", 
-                            "Броварське РУП (Апарат)"
+                            "Броварське РУП (Апарат)",
+                            "Фастівське РУП (Апарат)",
+                            "Вишгородське РУП (Апарат)"
                         ];
                         let unitSub = regionalUnits[index] || "Обласний підрозділ";
                         return `${officerName} [ Підрозділ: ${unitSub} ]`;
@@ -494,11 +503,12 @@
                     totalFines += unitsMap[k].fines;
                     totalCollected += unitsMap[k].collected;
                 }
-                activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК'];
-                activeCounts = [110, 110, 95, 85];
+                // Повний список штатних співробітників обласного зрізу для порівняння
+                activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'СУХАЦЬКИЙ', 'МАТВІЄНКО'];
+                activeCounts = [110, 105, 95, 85, 75, 60];
                 
-                document.getElementById('officersSectionTitle').innerText = "// ТОП ПОЛІЦЕЙСЬКИХ ПО ВСІЙ ОБЛАСТІ (ЗВЕДЕНИЙ РЕЙТИНГ)";
-                document.getElementById('officersSectionDesc').innerText = "Наведіть на прізвище або стовпчик, щоб переглянути підрозділ співробітника";
+                document.getElementById('officersSectionTitle').innerText = "// ШТАТНИЙ СКЛАД ТА НАВАНТАЖЕННЯ (ОБЛАСНИЙ ЗВЕДЕНИЙ РЕЙТИНГ)";
+                document.getElementById('officersSectionDesc').innerText = "Порівняння показників працівників по всій області (наведіть для перегляду підрозділу)";
             } else {
                 let uData = unitsMap[selectedUnitKey];
                 if (uData) {
@@ -509,8 +519,8 @@
                     activeCounts = uData.counts;
                     activeArticles = uData.articles;
                 }
-                document.getElementById('officersSectionTitle').innerText = "// ТОП ПОЛІЦЕЙСЬКИХ ВИБРАНОГО ПІДРОЗДІЛУ";
-                document.getElementById('officersSectionDesc').innerText = "Працівники виключно обраного органу поліції";
+                document.getElementById('officersSectionTitle').innerText = "// ПОВНИЙ ШТАТНИЙ СПИСОК ПРАЦІВНИКІВ ПІДРОЗДІЛУ ТА ЇХНЄ НАВАНТАЖЕННЯ";
+                document.getElementById('officersSectionDesc').innerText = "Порівняння кількості складених матеріалів кожним працівником обраного органу поліції";
             }
 
             const sameDayCount = filtered.length;
@@ -603,7 +613,7 @@
 
             officersChartInstance = new Chart(document.getElementById('unitOfficersChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ backgroundColor: '#00f0ff', borderRadius: 6, barThickness: 35 }] },
+                data: { labels: [], datasets: [{ backgroundColor: '#00f0ff', borderRadius: 6, barThickness: 28 }] },
                 options: { 
                     responsive: true, 
                     maintainAspectRatio: false, 
