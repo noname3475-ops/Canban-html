@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <!-- Панель керування: Підрозділ + Календар періоду + Кнопка весь період -->
+        <!-- Панель керування: Підрозділ + Календар періоду (з поточним днем) + Кнопка весь період -->
         <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto justify-end">
             <!-- Вибір дат -->
             <div class="flex items-center space-x-2 bg-slate-900/80 border border-cyan-900 px-3 py-1.5 rounded-lg">
@@ -340,9 +340,9 @@
         let currentFilteredRows = [];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Встановлюємо весь 2026 рік за замовчуванням
+            // Встановлюємо період за замовчуванням: з початку року по сьогодні (2026-08-25)
             document.getElementById('globalDateFrom').value = "2026-01-01";
-            document.getElementById('globalDateTo').value = "2026-12-31";
+            document.getElementById('globalDateTo').value = "2026-08-25";
 
             initChartsSkeleton();
             onGlobalFilterChange();
@@ -385,7 +385,7 @@
             currentFilteredRows = filtered;
 
             // Розрахунок метрик
-            const totalDocs = filtered.length * 35; // масштабування коефіцієнта для реалістичності зрізу
+            const totalDocs = filtered.length * 35;
             const totalFines = filtered.reduce((acc, r) => acc + r.fine, 0) + (selectedUnit === 'all' ? 3200000 : 450000);
             const totalCollected = filtered.reduce((acc, r) => acc + r.collected, 0) + (selectedUnit === 'all' ? 1800000 : 250000);
             const sameDayCount = filtered.length;
@@ -466,7 +466,6 @@
         }
 
         function initChartsSkeleton() {
-            // Ініціалізація порожніх графіків
             timelineChartInstance = new Chart(document.getElementById('overviewTimelineChart').getContext('2d'), {
                 type: 'line',
                 data: { labels: [], datasets: [{ borderColor: '#00f0ff', backgroundColor: 'rgba(0, 240, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
@@ -499,7 +498,6 @@
         }
 
         function updateCharts(filtered, selectedUnit) {
-            // Динаміка по місяцях на основі відфільтрованих даних
             let monthCounts = {'Січ': 0, 'Лют': 0, 'Бер': 0, 'Квіт': 0, 'Трав': 0, 'Черв': 0, 'Лип': 0, 'Сер': 0};
             filtered.forEach(r => {
                 let mNum = r.date.substring(5, 7);
@@ -511,12 +509,10 @@
             timelineChartInstance.data.datasets[0].data = Object.values(monthCounts);
             timelineChartInstance.update();
 
-            // Топ підрозділів або специфіка обраного
             topUnitsChartInstance.data.labels = selectedUnit === 'all' ? ['Білоцерківське РУП', 'Бучанське РУП', 'Обухівське РУП', 'Сквира ВП'] : [selectedUnit.substring(0, 25) + '...'];
             topUnitsChartInstance.data.datasets[0].data = selectedUnit === 'all' ? [filtered.length * 12 + 100, filtered.length * 10 + 80, filtered.length * 8 + 60, filtered.length * 5 + 30] : [filtered.length * 20 + 50];
             topUnitsChartInstance.update();
 
-            // Рейтинг офіцерів за період
             let officerMap = {};
             filtered.forEach(r => {
                 officerMap[r.officer] = (officerMap[r.officer] || 0) + 1;
@@ -528,7 +524,6 @@
             officersChartInstance.data.datasets[0].data = sortedOfficers.map(o => officerMap[o] ? officerMap[o] * 8 : Math.floor(Math.random() * 30) + 10);
             officersChartInstance.update();
 
-            // Статті КУпАП динамічно від обраних даних
             let artMap = {};
             filtered.forEach(r => { artMap[r.article] = (artMap[r.article] || 0) + 1; });
             let artLabels = Object.keys(artMap);
