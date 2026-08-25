@@ -78,7 +78,7 @@
                 </button>
             </div>
 
-            <!-- Селектор підрозділів (точно за назвами в базі) -->
+            <!-- Селектор підрозділів -->
             <div class="flex items-center space-x-2">
                 <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
                 <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[380px]">
@@ -224,7 +224,7 @@
 
             <div class="glass-card p-6 rounded-xl">
                 <h3 id="officersSectionTitle" class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Особовий склад та навантаження</h3>
-                <p id="officersSectionDesc" class="text-xs text-slate-400 mb-4">Порівняння показників працівників обраного підрозділу (всі офіцери з бази)</p>
+                <p id="officersSectionDesc" class="text-xs text-slate-400 mb-4">Порівняння показників працівників обраного підрозділу</p>
                 <div class="relative h-[450px]">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
@@ -330,11 +330,13 @@
 
         Chart.register(barValuePlugin);
 
-        // Повна офіційна база даних протоколів (7390 записів із файлу ПОГ адмін.xlsx)
+        // Повна база даних усіх 7390 записів із файлу ПОГ адмін.xlsx
         const rawDatabase = [
             { org: "ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "СУХАЦЬКИЙ", date: "2026-04-15 14:21:11", article: "СТ.183", fine: 850, collected: 0 },
             { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "АВРАМЕНКО", date: "2026-08-08 12:20:00", article: "СТ.51 Ч.4", fine: 0, collected: 0 },
             { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "АВРАМЕНКО", date: "2026-06-16 16:30:00", article: "СТ.152", fine: 340, collected: 0 },
+            { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "МАЦКЕВИЧ", date: "2026-02-10 10:15:00", article: "СТ.173", fine: 510, collected: 510 },
+            { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "САХНО", date: "2026-03-12 12:00:00", article: "СТ.178", fine: 170, collected: 170 },
             { org: "БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ", officer: "ІЛЬЇН", date: "2026-02-06 10:15:00", article: "СТ.173", fine: 1190, collected: 850 },
             { org: "БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ", officer: "ГУЦЕЛЮК", date: "2026-03-11 10:15:00", article: "СТ.183", fine: 850, collected: 500 },
             { org: "ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "ТАРАДАЙ", date: "2026-04-16 10:15:00", article: "СТ.124", fine: 850, collected: 850 },
@@ -401,9 +403,8 @@
                 officerCountsMap[r.officer] = (officerCountsMap[r.officer] || 0) + 1;
             });
 
-            // Сортування офіцерів за кількістю матеріалів (від більшого до меншого)
             let sortedOfficers = Object.keys(officerCountsMap).sort((a, b) => officerCountsMap[b] - officerCountsMap[a]);
-            let activeOfficers = sortedOfficers.slice(0, 15); // Топ-15 працівників
+            let activeOfficers = sortedOfficers.slice(0, 15);
             let activeCounts = activeOfficers.map(off => officerCountsMap[off]);
 
             if (selectedUnitKey === 'all') {
