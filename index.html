@@ -229,19 +229,20 @@
                 </div>
             </div>
 
-            <!-- Інтерактивна панель детального пояснення суті повторюваності -->
-            <div class="glass-card p-6 rounded-xl border border-cyan-500/40 bg-slate-900/90 shadow-lg">
+            <!-- Динамічна панель розбору: показує загальний аудит для області або деталі епізоду для підрозділу -->
+            <div id="explanationCard" class="glass-card p-6 rounded-xl border border-cyan-500/40 bg-slate-900/90 shadow-lg">
                 <div class="flex items-center space-x-3 mb-3">
                     <div class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-pulse"></div>
-                    <h3 class="mono-font text-sm text-cyan-300 uppercase tracking-wider">// Аналітичний розбір суті повторюваності та дублів</h3>
+                    <h3 id="explanationTitle" class="mono-font text-sm text-cyan-300 uppercase tracking-wider">// Обласний зведений аудит повторюваності</h3>
                 </div>
                 <div id="repetitionExplanation" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-2">
-                    <p><strong class="text-cyan-400">Що означає цей блок?</strong> Натисніть на будь-який рядок у таблиці нижче, щоб переглянути детальний розбір конкретного епізоду з можливих 142 зафіксованих по області.</p>
+                    <p><strong class="text-cyan-400">Режим обласного зрізу:</strong> Надано зведену статистику по всіх підрозділах ГУНП в Київській області. Для перегляду детального поіменного реєстру епізодів оберіть конкретний районний підрозділ у випадаючому списку праворуч у шапці сайту.</p>
                 </div>
             </div>
 
-            <div class="glass-card p-6 rounded-xl">
-                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Повний реєстр епізодів з повторним складанням в один день (142 епізоди)</h3>
+            <!-- Блок таблиці реєстру: приховується на обласному зрізі та з'являється при виборі окремого підрозділу -->
+            <div id="repetitionTableContainer" class="glass-card p-6 rounded-xl hidden">
+                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день (клікніть для деталізації)</h3>
                 <div class="overflow-x-auto max-h-[420px]">
                     <table class="w-full text-left text-sm text-slate-300 relative">
                         <thead class="bg-slate-900/95 text-cyan-400 uppercase mono-font text-xs border-b border-cyan-900 sticky top-0 z-10">
@@ -254,7 +255,7 @@
                             </tr>
                         </thead>
                         <tbody id="repetitionTableBody" class="divide-y divide-slate-800/60 font-mono text-xs">
-                            <!-- Заповнюється динамічно усіма 142 епізодами -->
+                            <!-- Заповнюється динамічно -->
                         </tbody>
                     </table>
                 </div>
@@ -312,7 +313,7 @@
 
         Chart.register(barValuePlugin);
 
-        // Функція для автоматичної генерації масиву епізодів для обласного зрізу (всі 142 епізоди)
+        // Генератор епізодів
         function generateAllEpisodes() {
             const unitsList = [
                 'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)', 
@@ -352,7 +353,6 @@
 
         const regionalEpisodes = generateAllEpisodes();
 
-        // База даних
         const database = {
             'all': {
                 name: 'Обласний зріз (Всі підрозділи)',
@@ -362,7 +362,7 @@
                 sameDayCount: 142,
                 officers: ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'БАЙРАМОВ'],
                 counts: [83, 79, 78, 77, 74],
-                repetitionRows: regionalEpisodes
+                repetitionRows: [] // На обласному зрізі таблиця епізодів порожня/прихована
             },
             'БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
                 totalDocs: 1431, finesImposed: '777 223 гривень', finesCollected: '553 401 гривень', sameDayCount: 28,
@@ -381,7 +381,7 @@
             }
         };
 
-        // Автоматичне заповнення для решти підрозділів
+        // Автоматичне заповнення решти підрозділів
         document.querySelectorAll('#globalUnitSelect option').forEach(opt => {
             const val = opt.value;
             if (val !== 'all' && !database[val]) {
@@ -432,36 +432,54 @@
             document.getElementById('repTotal').innerText = (data.sameDayCount * 2) + ' випадків';
             document.getElementById('repSameDay').innerText = data.sameDayCount + ' епізоди';
             
-            const tbody = document.getElementById('repetitionTableBody');
-            tbody.innerHTML = '';
-            
-            if(data.repetitionRows.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500">Немає зафіксованих дублів за добу у цьому підрозділі</td></tr>`;
-                document.getElementById('repetitionExplanation').innerHTML = `<p class="text-emerald-400">У вибраному підрозділі за поточний звітний період дублювання матеріалів або повторних епізодів за добу не виявлено.</p>`;
-            } else {
-                document.getElementById('repetitionExplanation').innerHTML = `
-                    <p><strong class="text-cyan-400">Суть вибраного епізоду:</strong> ${data.repetitionRows[0].desc}</p>
-                    <p class="text-slate-400 text-[11px] mt-1">Офіцер відповідальний за складання: <span class="text-white font-semibold">${data.repetitionRows[0].officer}</span> | Стаття: <span class="text-amber-300">${data.repetitionRows[0].article}</span></p>
-                `;
+            const tableContainer = document.getElementById('repetitionTableContainer');
+            const explanationTitle = document.getElementById('explanationTitle');
+            const explanationBody = document.getElementById('repetitionExplanation');
 
-                data.repetitionRows.forEach((row, idx) => {
-                    tbody.innerHTML += `
-                        <tr onclick="selectRepetitionRow(${idx}, '${selectedKey}')" class="hover:bg-cyan-950/40 cursor-pointer transition-colors">
-                            <td class="px-4 py-3 text-amber-400">${row.date}</td>
-                            <td class="px-4 py-3 text-slate-300">${row.unit}</td>
-                            <td class="px-4 py-3 font-semibold text-white">${row.officer}</td>
-                            <td class="px-4 py-3 text-slate-400">${row.article}</td>
-                            <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (доба)</td>
-                        </tr>
+            if (selectedKey === 'all') {
+                // Режим обласного зрізу: приховуємо таблицю, показуємо зведену довідку
+                tableContainer.classList.add('hidden');
+                explanationTitle.innerText = '// ОБЛАСНИЙ ЗВЕДЕНИЙ АУДИТ ПОВТОРЮВАНОСТІ';
+                explanationBody.innerHTML = `
+                    <p><strong class="text-cyan-400">Режим обласного зрізу:</strong> Відображається сумарна статистика по всіх підрозділах ГУНП в Київській області (загалом зафіксовано 142 епізоди дублювання за добу).</p>
+                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Щоб переглянути поіменний реєстр епізодів з реквізитами, оберіть конкретний районний підрозділ</span> у випадаючому списку зверху сторінки.</p>
+                `;
+            } else {
+                // Режим конкретного підрозділу: показуємо таблицю епізодів цього підрозділу
+                tableContainer.classList.remove('hidden');
+                explanationTitle.innerText = `// АНАЛІТИЧНИЙ РОЗБІР ЕПІЗОДІВ: ${data.name}`;
+                
+                const tbody = document.getElementById('repetitionTableBody');
+                tbody.innerHTML = '';
+
+                if (data.repetitionRows.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500">Немає зафіксованих дублів за добу у цьому підрозділі</td></tr>`;
+                    explanationBody.innerHTML = `<p class="text-emerald-400">У вибраному підрозділі за звітний період дублювання матеріалів не виявлено.</p>`;
+                } else {
+                    explanationBody.innerHTML = `
+                        <p><strong class="text-cyan-400">Суть вибраного епізоду:</strong> ${data.repetitionRows[0].desc}</p>
+                        <p class="text-slate-400 text-[11px] mt-1">Співробітник: <span class="text-white font-semibold">${data.repetitionRows[0].officer}</span> | Стаття: <span class="text-amber-300">${data.repetitionRows[0].article}</span></p>
                     `;
-                });
+
+                    data.repetitionRows.forEach((row, idx) => {
+                        tbody.innerHTML += `
+                            <tr onclick="selectRepetitionRow(${idx}, '${selectedKey}')" class="hover:bg-cyan-950/40 cursor-pointer transition-colors">
+                                <td class="px-4 py-3 text-amber-400">${row.date}</td>
+                                <td class="px-4 py-3 text-slate-300">${row.unit}</td>
+                                <td class="px-4 py-3 font-semibold text-white">${row.officer}</td>
+                                <td class="px-4 py-3 text-slate-400">${row.article}</td>
+                                <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (доба)</td>
+                            </tr>
+                        `;
+                    });
+                }
             }
         }
 
         function selectRepetitionRow(index, unitKey) {
-            const data = database[unitKey] || database['all'];
-            const row = data.repetitionRows[index];
-            if(row) {
+            const data = database[unitKey];
+            if (data && data.repetitionRows[index]) {
+                const row = data.repetitionRows[index];
                 document.getElementById('repetitionExplanation').innerHTML = `
                     <p><strong class="text-cyan-400">Деталі епізоду №${index + 1} (${row.date}):</strong> ${row.desc}</p>
                     <p class="text-slate-400 text-[11px] mt-1">Підрозділ: <span class="text-cyan-300">${row.unit}</span> | Співробітник: <span class="text-white font-semibold">${row.officer}</span> | Стаття КУпАП: <span class="text-amber-300">${row.article}</span></p>
