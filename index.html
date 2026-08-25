@@ -78,7 +78,7 @@
                 </button>
             </div>
 
-            <!-- Повний селектор підрозділів (усі 28 підрозділів) -->
+            <!-- Селектор підрозділів -->
             <div class="flex items-center space-x-2">
                 <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
                 <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[360px]">
@@ -225,8 +225,8 @@
             </div>
 
             <div class="glass-card p-6 rounded-xl">
-                <h3 class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
-                <p class="text-xs text-slate-400 mb-4">Працівники виключно обраного органу поліції</p>
+                <h3 id="officersSectionTitle" class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
+                <p id="officersSectionDesc" class="text-xs text-slate-400 mb-4">Працівники виключно обраного органу поліції</p>
                 <div class="relative h-80">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
@@ -332,7 +332,7 @@
 
         Chart.register(barValuePlugin);
 
-        // Генератор унікальних і чітко ізольованих даних для ВСІХ 28 підрозділів
+        // Генератор унікальних даних для всіх 28 підрозділів
         function generateCompleteUnitDatabase() {
             const selectOptions = document.querySelectorAll('#globalUnitSelect option');
             let unitsMap = {};
@@ -354,11 +354,10 @@
                 if (key === 'all') return;
 
                 let unitNameText = opt.textContent.trim().replace(/^[^а-яА-Яa-zA-Z0-9№]+/, '');
-                let baseDocs = Math.floor(Math.sin(index + 1) * 150 + 250); // від 100 до 400 матеріалів
+                let baseDocs = Math.floor(Math.sin(index + 1) * 150 + 250); 
                 let fines = baseDocs * 520;
                 let collected = Math.floor(fines * 0.62);
 
-                // Унікальні інспектори для кожного окремого підрозділу
                 let off1 = surnamePool[(index * 3) % surnamePool.length];
                 let off2 = surnamePool[(index * 3 + 1) % surnamePool.length];
                 let off3 = surnamePool[(index * 3 + 2) % surnamePool.length];
@@ -386,7 +385,6 @@
                     articles: unitArticles
                 };
 
-                // Генерація персональних епізодів (3-8 епізодів) суворо для цього підрозділу
                 let epCount = (index % 5) + 4;
                 for (let j = 0; j < epCount; j++) {
                     let month = ((j % 8) + 1).toString().padStart(2, '0');
@@ -447,13 +445,12 @@
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
         }
 
-        // Сувора фільтрація та оновлення всіх даних за обраним підрозділом і періодом
+        // Логіка фільтрації та побудови графіків
         function onGlobalFilterChange() {
-            const selectedUnitKey = document.getElementById('globalUnitSelect').value;
+            const selectedUnitKey = document.getElementById('globalUnitSelect'].value;
             const dateFrom = document.getElementById('globalDateFrom').value;
             const dateTo = document.getElementById('globalDateTo').value;
 
-            // Фільтрація епізодів
             let filtered = allEpisodes.filter(row => {
                 const rowDateOnly = row.date.substring(0, 10);
                 if (dateFrom && rowDateOnly < dateFrom) return false;
@@ -469,20 +466,22 @@
             let totalCollected = 0;
             let activeOfficers = [];
             let activeCounts = [];
-            let activeArticles = [];
+            let activeArticles = [40, 30, 20, 10];
 
             if (selectedUnitKey === 'all') {
-                // Обласний зріз
+                // Обласний зріз: сумуємо всі матеріали і формуємо топ обласних рекордсменів
                 for (let k in unitsMap) {
                     totalDocs += unitsMap[k].baseDocs;
                     totalFines += unitsMap[k].fines;
                     totalCollected += unitsMap[k].collected;
                 }
-                activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК'];
-                activeCounts = [120, 110, 95, 85];
-                activeArticles = [40, 30, 20, 10];
+                activeOfficers = ['ЯМБУРЕНКО (Область)', 'ТАРАДАЙ (Область)', 'ІЛЬЇН (Область)', 'ГУЦЕЛЮК (Область)'];
+                activeCounts = [310, 285, 260, 240];
+                
+                document.getElementById('officersSectionTitle').innerText = "// ТОП ПОЛІЦЕЙСЬКИХ ПО ВСІЙ ОБЛАСТІ (ЗВЕДЕНИЙ РЕЙТИНГ)";
+                document.getElementById('officersSectionDesc').innerText = "Працівники з найбільшими показниками навантаження по регіону";
             } else {
-                // Суворо обраний підрозділ
+                // Конкретний підрозділ
                 let uData = unitsMap[selectedUnitKey];
                 if (uData) {
                     totalDocs = uData.baseDocs;
@@ -492,11 +491,12 @@
                     activeCounts = uData.counts;
                     activeArticles = uData.articles;
                 }
+                document.getElementById('officersSectionTitle').innerText = "// ТОП ПОЛІЦЕЙСЬКИХ ВИБРАНОГО ПІДРОЗДІЛУ";
+                document.getElementById('officersSectionDesc').innerText = "Працівники виключно обраного органу поліції";
             }
 
             const sameDayCount = filtered.length;
 
-            // Оновлення карток
             document.getElementById('ovTotalDocs').innerText = totalDocs.toLocaleString();
             document.getElementById('ovFinesImposed').innerText = totalFines.toLocaleString() + ' грн';
             document.getElementById('ovFinesCollected').innerText = totalCollected.toLocaleString() + ' грн';
