@@ -47,11 +47,15 @@
         ::-webkit-scrollbar-thumb:hover {
             background: #00f0ff;
         }
+        input[type="date"]::-webkit-calendar-picker-indicator {
+            filter: invert(1) hue-rotate(180deg) brightness(1.5);
+            cursor: pointer;
+        }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
 
-    <!-- Header -->
+    <!-- Header з глобальним вибором підрозділу та календарем періоду -->
     <header class="glass-card border-b border-cyan-900/50 sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-3 h-3 bg-cyan-400 rounded-full animate-ping"></div>
@@ -60,68 +64,83 @@
                 <p class="text-[11px] text-slate-400 tracking-widest uppercase">Аудит навантаження та аналіз повторюваності адмінматеріалів</p>
             </div>
         </div>
-        <!-- Ієрархічний селектор підрозділів -->
-        <div class="flex items-center space-x-3 w-full lg:w-auto">
-            <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
-            <select id="globalUnitSelect" onchange="onGlobalUnitChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full lg:w-[480px]">
-                <option value="all">-- ВСІ ПОДІЛЕННЯ (ОБЛАСНИЙ ЗРІЗ) --</option>
-                
-                <!-- БІЛОЦЕРКІВСЬКЕ РУП -->
-                <optgroup label="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
-                    <option value="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Білоцерківське РУП (Апарат)</option>
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (м. Сквира)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (смт Рокитне)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.ТАРАЩА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Тараща)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (М. ТЕТІЇВ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №3 (м. Тетіїв)</option>
-                </optgroup>
 
-                <!-- БУЧАНСЬКЕ РУП -->
-                <optgroup label="БУЧАНСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №2 (м. Ірпінь)</option>
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №3 (С. МИЛА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №3 (с. Мила)</option>
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВИШНЕВЕ) БУЧАНСЬКОГО РУП ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №1 (м. Вишневе)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (СМТ МАКАРІВ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №3 (смт Макарів)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (смт Бородянка)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БУЧА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (м. Буча)</option>
-                </optgroup>
+        <!-- Панель керування: Підрозділ + Календар періоду + Кнопка весь період -->
+        <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto justify-end">
+            <!-- Вибір дат -->
+            <div class="flex items-center space-x-2 bg-slate-900/80 border border-cyan-900 px-3 py-1.5 rounded-lg">
+                <span class="text-[10px] text-cyan-400 mono-font uppercase">Період:</span>
+                <input type="date" id="globalDateFrom" onchange="onGlobalFilterChange()" class="bg-transparent text-cyan-300 text-xs focus:outline-none mono-font">
+                <span class="text-slate-500">—</span>
+                <input type="date" id="globalDateTo" onchange="onGlobalFilterChange()" class="bg-transparent text-cyan-300 text-xs focus:outline-none mono-font">
+                <button onclick="setAllTimePeriod()" title="Показати за весь період" class="bg-cyan-950 hover:bg-cyan-900 border border-cyan-700 text-cyan-300 text-[10px] px-2 py-1 rounded transition-colors mono-font ml-1">
+                    ВЕСЬ ПЕРІОД
+                </button>
+            </div>
 
-                <!-- БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
-                <optgroup label="БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
-                    <option value="БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Бориспільське РУП (Апарат)</option>
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ-ХМЕЛЬНИЦЬКИЙ) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (м. Переяслав-Хмельницький)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М. ЯГОТИН) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Яготин)</option>
-                </optgroup>
+            <!-- Селектор підрозділів -->
+            <div class="flex items-center space-x-2">
+                <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
+                <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[360px]">
+                    <option value="all">-- ВСІ ПОДІЛЕННЯ (ОБЛАСНИЙ ЗРІЗ) --</option>
+                    
+                    <!-- БІЛОЦЕРКІВСЬКЕ РУП -->
+                    <optgroup label="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Білоцерківське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (м. Сквира)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (смт Рокитне)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.ТАРАЩА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Тараща)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (М. ТЕТІЇВ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №3 (м. Тетіїв)</option>
+                    </optgroup>
 
-                <!-- ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
-                <optgroup label="ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
-                    <option value="ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Обухівське РУП (Апарат)</option>
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВАСИЛЬКІВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №1 (м. Васильків)</option>
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.МИРОНІВКА) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №2 (м. Миронівка)</option>
-                    <option value="ВП№1 (М.КАГАРЛИК) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - ВП №1 (м. Кагарлик)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.БОГУСЛАВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділення поліції №2 (м. Богуслав)</option>
-                </optgroup>
+                    <!-- БУЧАНСЬКЕ РУП -->
+                    <optgroup label="БУЧАНСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №2 (м. Ірпінь)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №3 (С. МИЛА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №3 (с. Мила)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВИШНЕВЕ) БУЧАНСЬКОГО РУП ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №1 (м. Вишневе)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (СМТ МАКАРІВ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №3 (смт Макарів)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (смт Бородянка)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БУЧА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (м. Буча)</option>
+                    </optgroup>
 
-                <!-- БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
-                <optgroup label="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
-                    <option value="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Броварське РУП (Апарат)</option>
-                    <option value="ВІДДІЛ ПОЛІЦІЇ №1 (С.БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (с. Баришівка)</option>
-                </optgroup>
+                    <!-- БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Бориспільське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ-ХМЕЛЬНИЦЬКИЙ) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (м. Переяслав-Хмельницький)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М. ЯГОТИН) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Яготин)</option>
+                    </optgroup>
 
-                <!-- ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
-                <optgroup label="ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
-                    <option value="ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Вишгородське РУП (Апарат)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ ІВАНКІВ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (смт Іванків)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.СЛАВУТИЧ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Славутич)</option>
-                </optgroup>
+                    <!-- ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Обухівське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВАСИЛЬКІВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №1 (м. Васильків)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.МИРОНІВКА) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділ поліції №2 (м. Миронівка)</option>
+                        <option value="ВП№1 (М.КАГАРЛИК) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - ВП №1 (м. Кагарлик)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.БОГУСЛАВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">   - Відділення поліції №2 (м. Богуслав)</option>
+                    </optgroup>
 
-                <!-- ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
-                <optgroup label="ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
-                    <option value="ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Фастівське РУП (Апарат)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ ЧАБАНИ) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (смт Чабани)</option>
-                    <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БОЯРКА) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (м. Боярка)</option>
-                    <option value="Відділення поліції №3 (с. Данилівка) Фастівського РУП ГУНП в Київській області">   - Відділення поліції №3 (с. Данилівка)</option>
-                </optgroup>
-            </select>
+                    <!-- БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Броварське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (С.БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділ поліції №1 (с. Баришівка)</option>
+                    </optgroup>
+
+                    <!-- ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Вишгородське РУП (Апарат)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ ІВАНКІВ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (смт Іванків)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.СЛАВУТИЧ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (м. Славутич)</option>
+                    </optgroup>
+
+                    <!-- ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ -->
+                    <optgroup label="ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">» Фастівське РУП (Апарат)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ ЧАБАНИ) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №2 (смт Чабани)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БОЯРКА) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">   - Відділення поліції №1 (м. Боярка)</option>
+                        <option value="Відділення поліції №3 (с. Данилівка) Фастівського РУП ГУНП в Київській області">   - Відділення поліції №3 (с. Данилівка)</option>
+                    </optgroup>
+                </select>
+            </div>
         </div>
     </header>
 
@@ -150,7 +169,7 @@
                 <div class="glass-card p-5 rounded-xl border-l-4 border-cyan-400">
                     <p class="text-xs text-slate-400 uppercase mono-font">Всього матеріалів</p>
                     <h3 id="ovTotalDocs" class="mono-font text-3xl font-bold text-white mt-2">7,390</h3>
-                    <p class="text-[10px] text-cyan-400 mt-1">▲ Обласна адмінпрактика</p>
+                    <p class="text-[10px] text-cyan-400 mt-1">▲ За обраний період</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl border-l-4 border-emerald-400">
                     <p class="text-xs text-slate-400 uppercase mono-font">Накладено штрафів</p>
@@ -191,7 +210,7 @@
                 <div class="glass-card p-5 rounded-xl">
                     <p class="text-xs text-slate-400 uppercase mono-font">Матеріалів у підрозділі</p>
                     <h3 id="unitTotalDocs" class="mono-font text-3xl font-bold text-cyan-300 mt-2">0</h3>
-                    <p class="text-[10px] text-cyan-400 mt-1">Вибраний підрозділ</p>
+                    <p class="text-[10px] text-cyan-400 mt-1">Вибраний період</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl">
                     <p class="text-xs text-slate-400 uppercase mono-font">Сума накладених штрафів</p>
@@ -207,7 +226,7 @@
 
             <div class="glass-card p-6 rounded-xl">
                 <h3 class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
-                <p class="text-xs text-slate-400 mb-4">Відображаються працівники виключно обраного органу поліції</p>
+                <p class="text-xs text-slate-400 mb-4">Відображаються працівники виключно обраного органу поліції за період</p>
                 <div class="relative h-80">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
@@ -219,30 +238,30 @@
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div class="glass-card p-5 rounded-xl border-l-4 border-amber-400">
                     <p class="text-xs text-slate-400 uppercase mono-font">Повторні матеріали на особу</p>
-                    <h3 id="repTotal" class="mono-font text-3xl font-bold text-white mt-2">284 випадки</h3>
-                    <p class="text-[10px] text-amber-400 mt-1">Фіксації повторних правопорушень протягом року</p>
+                    <h3 id="repTotal" class="mono-font text-3xl font-bold text-white mt-2">0 випадків</h3>
+                    <p class="text-[10px] text-amber-400 mt-1">За обраний період</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl border-l-4 border-red-500">
                     <p class="text-xs text-slate-400 uppercase mono-font">Дублювання в один день</p>
-                    <h3 id="repSameDay" class="mono-font text-3xl font-bold text-white mt-2">142 епізоди</h3>
-                    <p class="text-[10px] text-red-400 mt-1">Кілька адміністративних матеріалів за 24 години</p>
+                    <h3 id="repSameDay" class="mono-font text-3xl font-bold text-white mt-2">0 епізоди</h3>
+                    <p class="text-[10px] text-red-400 mt-1">Кількість зафіксованих дублів</p>
                 </div>
             </div>
 
-            <!-- Динамічна панель розбору: показує загальний аудит для області або деталі епізоду для підрозділу -->
+            <!-- Динамічна панель розбору -->
             <div id="explanationCard" class="glass-card p-6 rounded-xl border border-cyan-500/40 bg-slate-900/90 shadow-lg">
                 <div class="flex items-center space-x-3 mb-3">
                     <div class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-pulse"></div>
-                    <h3 id="explanationTitle" class="mono-font text-sm text-cyan-300 uppercase tracking-wider">// Обласний зведений аудит повторюваності</h3>
+                    <h3 id="explanationTitle" class="mono-font text-sm text-cyan-300 uppercase tracking-wider">// Зведений аудит повторюваності</h3>
                 </div>
                 <div id="repetitionExplanation" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-2">
-                    <p><strong class="text-cyan-400">Режим обласного зрізу:</strong> Надано зведену статистику по всіх підрозділах ГУНП в Київській області. Для перегляду детального поіменного реєстру епізодів оберіть конкретний районний підрозділ у випадаючому списку праворуч у шапці сайту.</p>
+                    <p><strong class="text-cyan-400">Статус:</strong> Оберіть районний підрозділ у верхній панелі для перегляду поіменного реєстру за обраний період.</p>
                 </div>
             </div>
 
-            <!-- Блок таблиці реєстру: приховується на обласному зрізі та з'являється при виборі окремого підрозділу -->
+            <!-- Блок таблиці реєстру -->
             <div id="repetitionTableContainer" class="glass-card p-6 rounded-xl hidden">
-                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день (клікніть для деталізації)</h3>
+                <h3 class="mono-font text-sm text-cyan-400 mb-4 uppercase">// Реєстр епізодів з повторним складанням в один день</h3>
                 <div class="overflow-x-auto max-h-[420px]">
                     <table class="w-full text-left text-sm text-slate-300 relative">
                         <thead class="bg-slate-900/95 text-cyan-400 uppercase mono-font text-xs border-b border-cyan-900 sticky top-0 z-10">
@@ -313,7 +332,7 @@
 
         Chart.register(barValuePlugin);
 
-        // Генератор епізодів
+        // Генератор епізодів для різних місяців 2026 року
         function generateAllEpisodes() {
             const unitsList = [
                 'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ)', 
@@ -334,20 +353,23 @@
                 let unit = unitsList[(i * 3) % unitsList.length];
                 let officer = officersList[(i * 7) % officersList.length];
                 let article = articlesList[(i * 2) % articlesList.length];
-                let day = (i % 28) + 1;
+                
+                // Розподіляємо дати по різних місяцях 2026 року (наприклад, з січня по серпень)
                 let month = ((i % 8) + 1).toString().padStart(2, '0');
+                let day = ((i * 3) % 27 + 1).toString().padStart(2, '0');
                 let hour = (8 + (i % 12)).toString().padStart(2, '0');
                 let minute = (i * 13) % 60;
                 let minuteStr = minute < 10 ? '0' + minute : minute;
                 
                 generated.push({
-                    date: `2026-${month}-${day.toString().padStart(2, '0')} ${hour}:${minuteStr}`,
+                    date: `2026-${month}-${day} ${hour}:${minuteStr}`,
                     unit: unit,
                     officer: officer,
                     article: article,
-                    desc: `Епізод #${i}: Зафіксовано повторне складання адміністративного матеріалу за статтею ${article} на ту саму особу протягом 24 годин підрозділом ${unit}. Інспектор: ${officer}. Рекомендовано перевірити обґрунтованість повторного реагування.`
+                    desc: `Епізод #${i}: Зафіксовано повторне складання адмінматеріалу за статтею ${article} на особу протягом 24 годин підрозділом ${unit}. Інспектор: ${officer}.`
                 });
             }
+            generated.sort((a, b) => a.date.localeCompare(b.date));
             return generated;
         }
 
@@ -359,47 +381,61 @@
                 totalDocs: 7390,
                 finesImposed: '4 221 678 гривень',
                 finesCollected: '2 300 044 гривень',
-                sameDayCount: 142,
                 officers: ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'БАЙРАМОВ'],
                 counts: [83, 79, 78, 77, 74],
-                repetitionRows: [] // На обласному зрізі таблиця епізодів порожня/прихована
+                repetitionRows: regionalEpisodes
             },
             'БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
-                totalDocs: 1431, finesImposed: '777 223 гривень', finesCollected: '553 401 гривень', sameDayCount: 28,
+                totalDocs: 1431, finesImposed: '777 223 гривень', finesCollected: '553 401 гривень',
                 officers: ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'БАЙРАМОВ'], counts: [83, 79, 78, 77, 74],
-                repetitionRows: regionalEpisodes.slice(0, 28)
+                repetitionRows: regionalEpisodes.filter(r => r.unit.includes('БІЛОЦЕРКІВСЬКЕ') || r.unit.includes('РОКИТНЕ') || r.unit.includes('СКВИРА'))
             },
             'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
-                totalDocs: 302, finesImposed: '120 088 гривень', finesCollected: '89 216 гривень', sameDayCount: 6,
+                totalDocs: 302, finesImposed: '120 088 гривень', finesCollected: '89 216 гривень',
                 officers: ['ПЕРЕСТЮК', 'СУХАЦЬКИЙ', 'ТОЛЯРОВСЬКИЙ', 'ФЕДОРЕНКО', 'СВІНЦИЦЬКИЙ'], counts: [87, 83, 58, 42, 28],
-                repetitionRows: regionalEpisodes.slice(0, 6)
+                repetitionRows: regionalEpisodes.filter(r => r.unit.includes('СКВИРА'))
             },
             'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
-                totalDocs: 285, finesImposed: '145 200 гривень', finesCollected: '92 100 гривень', sameDayCount: 7,
+                totalDocs: 285, finesImposed: '145 200 гривень', finesCollected: '92 100 гривень',
                 officers: ['ВАСИЛЕНКО', 'АВРАМЕНКО', 'ПОЛУКЕЄВ', 'МАРЧЕНКО', 'КОВАЛЬЧУК'], counts: [87, 66, 63, 45, 24],
-                repetitionRows: regionalEpisodes.slice(0, 7)
+                repetitionRows: regionalEpisodes.filter(r => r.unit.includes('РОКИТНЕ'))
             }
         };
 
-        // Автоматичне заповнення решти підрозділів
+        // Заповнення для решти підрозділів
         document.querySelectorAll('#globalUnitSelect option').forEach(opt => {
             const val = opt.value;
             if (val !== 'all' && !database[val]) {
-                let count = Math.floor(Math.random() * 4) + 2;
+                const matched = regionalEpisodes.filter(r => r.unit.includes(opt.textContent.trim().split(' ')[0]) || Math.random() > 0.4);
                 database[val] = {
                     name: opt.textContent.trim(),
                     totalDocs: Math.floor(Math.random() * 150) + 80,
                     finesImposed: '110 000 гривень',
                     finesCollected: '70 000 гривень',
-                    sameDayCount: count,
                     officers: ['ІВАНОВ', 'ПЕТРЕНКО', 'СИДОРЕНКО', 'КОВАЛЕНКО'],
                     counts: [45, 35, 25, 15],
-                    repetitionRows: regionalEpisodes.slice(0, count)
+                    repetitionRows: matched
                 };
             }
         });
 
         let unitOfficersChartInstance = null;
+        let currentFilteredRows = [];
+
+        // Встановити весь період за замовчуванням (або весь 2026 рік)
+        window.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('globalDateFrom').value = "2026-01-01";
+            document.getElementById('globalDateTo').value = "2026-12-31";
+
+            initCharts();
+            onGlobalFilterChange();
+        });
+
+        function setAllTimePeriod() {
+            document.getElementById('globalDateFrom').value = "";
+            document.getElementById('globalDateTo').value = "";
+            onGlobalFilterChange();
+        }
 
         function switchTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
@@ -414,56 +450,71 @@
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
         }
 
-        function onGlobalUnitChange() {
+        // Головна функція фільтрації за підрозділом та датами
+        function onGlobalFilterChange() {
             const selectedKey = document.getElementById('globalUnitSelect').value;
             const data = database[selectedKey] || database['all'];
 
-            document.getElementById('ovTotalDocs').innerText = data.totalDocs.toLocaleString();
+            const dateFrom = document.getElementById('globalDateFrom').value;
+            const dateTo = document.getElementById('globalDateTo').value;
+
+            // Фільтруємо повторюваність за датами
+            currentFilteredRows = data.repetitionRows.filter(row => {
+                const rowDateOnly = row.date.substring(0, 10);
+                if (dateFrom && rowDateOnly < dateFrom) return false;
+                if (dateTo && rowDateOnly > dateTo) return false;
+                return true;
+            });
+
+            const sameDayCount = currentFilteredRows.length;
+            const totalCases = sameDayCount * 2;
+
+            // Оновлюємо картки
+            document.getElementById('ovTotalDocs').innerText = (dateFrom || dateTo) ? Math.round(data.totalDocs * (currentFilteredRows.length / (data.repetitionRows.length || 1)) || data.totalDocs).toLocaleString() : data.totalDocs.toLocaleString();
             document.getElementById('ovFinesImposed').innerText = data.finesImposed;
             document.getElementById('ovFinesCollected').innerText = data.finesCollected;
-            document.getElementById('ovSameDay').innerText = data.sameDayCount;
+            document.getElementById('ovSameDay').innerText = sameDayCount;
 
-            document.getElementById('unitTotalDocs').innerText = data.totalDocs.toLocaleString();
+            document.getElementById('unitTotalDocs').innerText = document.getElementById('ovTotalDocs').innerText;
             document.getElementById('unitFinesImposed').innerText = data.finesImposed;
             document.getElementById('unitFinesCollected').innerText = data.finesCollected;
 
+            document.getElementById('repTotal').innerText = totalCases + ' випадків';
+            document.getElementById('repSameDay').innerText = sameDayCount + ' епізоди';
+
             updateOfficersChart(data.officers, data.counts);
 
-            document.getElementById('repTotal').innerText = (data.sameDayCount * 2) + ' випадків';
-            document.getElementById('repSameDay').innerText = data.sameDayCount + ' епізоди';
-            
+            // Логіка відображення таблиці епізодів
             const tableContainer = document.getElementById('repetitionTableContainer');
             const explanationTitle = document.getElementById('explanationTitle');
             const explanationBody = document.getElementById('repetitionExplanation');
 
             if (selectedKey === 'all') {
-                // Режим обласного зрізу: приховуємо таблицю, показуємо зведену довідку
                 tableContainer.classList.add('hidden');
-                explanationTitle.innerText = '// ОБЛАСНИЙ ЗВЕДЕНИЙ АУДИТ ПОВТОРЮВАНОСТІ';
+                explanationTitle.innerText = '// ОБЛАСНИЙ ЗВЕДЕНИЙ АУДИТ ЗА ПЕРІОД';
                 explanationBody.innerHTML = `
-                    <p><strong class="text-cyan-400">Режим обласного зрізу:</strong> Відображається сумарна статистика по всіх підрозділах ГУНП в Київській області (загалом зафіксовано 142 епізоди дублювання за добу).</p>
-                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Щоб переглянути поіменний реєстр епізодів з реквізитами, оберіть конкретний районний підрозділ</span> у випадаючому списку зверху сторінки.</p>
+                    <p><strong class="text-cyan-400">Обласний зріз:</strong> За обраний період виявлено <span class="text-white font-bold">${sameDayCount} епізодів</span> дублювання по всій області.</p>
+                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть конкретний районний підрозділ</span> у випадаючому списку вище, щоб переглянути детальний поіменний реєстр.</p>
                 `;
             } else {
-                // Режим конкретного підрозділу: показуємо таблицю епізодів цього підрозділу
                 tableContainer.classList.remove('hidden');
-                explanationTitle.innerText = `// АНАЛІТИЧНИЙ РОЗБІР ЕПІЗОДІВ: ${data.name}`;
-                
+                explanationTitle.innerText = `// РЕЄСТР ЕПІЗОДІВ: ${data.name}`;
+
                 const tbody = document.getElementById('repetitionTableBody');
                 tbody.innerHTML = '';
 
-                if (data.repetitionRows.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500">Немає зафіксованих дублів за добу у цьому підрозділі</td></tr>`;
-                    explanationBody.innerHTML = `<p class="text-emerald-400">У вибраному підрозділі за звітний період дублювання матеріалів не виявлено.</p>`;
+                if (currentFilteredRows.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500">За обраний період у цьому підрозділі дублів не знайдено</td></tr>`;
+                    explanationBody.innerHTML = `<p class="text-emerald-400">За вказаний проміжок часу в цьому підрозділі дублювань не зафіксовано.</p>`;
                 } else {
                     explanationBody.innerHTML = `
-                        <p><strong class="text-cyan-400">Суть вибраного епізоду:</strong> ${data.repetitionRows[0].desc}</p>
-                        <p class="text-slate-400 text-[11px] mt-1">Співробітник: <span class="text-white font-semibold">${data.repetitionRows[0].officer}</span> | Стаття: <span class="text-amber-300">${data.repetitionRows[0].article}</span></p>
+                        <p><strong class="text-cyan-400">Суть вибраного епізоду:</strong> ${currentFilteredRows[0].desc}</p>
+                        <p class="text-slate-400 text-[11px] mt-1">Співробітник: <span class="text-white font-semibold">${currentFilteredRows[0].officer}</span> | Стаття: <span class="text-amber-300">${currentFilteredRows[0].article}</span></p>
                     `;
 
-                    data.repetitionRows.forEach((row, idx) => {
+                    currentFilteredRows.forEach((row, idx) => {
                         tbody.innerHTML += `
-                            <tr onclick="selectRepetitionRow(${idx}, '${selectedKey}')" class="hover:bg-cyan-950/40 cursor-pointer transition-colors">
+                            <tr onclick="selectRepetitionRow(${idx})" class="hover:bg-cyan-950/40 cursor-pointer transition-colors">
                                 <td class="px-4 py-3 text-amber-400">${row.date}</td>
                                 <td class="px-4 py-3 text-slate-300">${row.unit}</td>
                                 <td class="px-4 py-3 font-semibold text-white">${row.officer}</td>
@@ -476,13 +527,12 @@
             }
         }
 
-        function selectRepetitionRow(index, unitKey) {
-            const data = database[unitKey];
-            if (data && data.repetitionRows[index]) {
-                const row = data.repetitionRows[index];
+        function selectRepetitionRow(index) {
+            if (currentFilteredRows[index]) {
+                const row = currentFilteredRows[index];
                 document.getElementById('repetitionExplanation').innerHTML = `
-                    <p><strong class="text-cyan-400">Деталі епізоду №${index + 1} (${row.date}):</strong> ${row.desc}</p>
-                    <p class="text-slate-400 text-[11px] mt-1">Підрозділ: <span class="text-cyan-300">${row.unit}</span> | Співробітник: <span class="text-white font-semibold">${row.officer}</span> | Стаття КУпАП: <span class="text-amber-300">${row.article}</span></p>
+                    <p><strong class="text-cyan-400">Деталі епізоду (${row.date}):</strong> ${row.desc}</p>
+                    <p class="text-slate-400 text-[11px] mt-1">Підрозділ: <span class="text-cyan-300">${row.unit}</span> | Співробітник: <span class="text-white font-semibold">${row.officer}</span> | Стаття: <span class="text-amber-300">${row.article}</span></p>
                 `;
             }
         }
@@ -509,34 +559,16 @@
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
-                    plugins: { 
-                        legend: { display: false },
-                        tooltip: {
-                            backgroundColor: 'rgba(5, 11, 20, 0.9)',
-                            titleColor: '#00f0ff',
-                            bodyColor: '#ffffff',
-                            borderColor: '#00f0ff',
-                            borderWidth: 1,
-                            padding: 10,
-                            displayColors: false
-                        }
-                    },
+                    plugins: { legend: { display: false } },
                     scales: {
-                        x: { 
-                            grid: { display: false }, 
-                            ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono', size: 11 } } 
-                        },
-                        y: { 
-                            grid: { color: 'rgba(255,255,255,0.05)' }, 
-                            ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono' } },
-                            beginAtZero: true
-                        }
+                        x: { grid: { display: false }, ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono', size: 11 } } },
+                        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#8a99ad', font: { family: 'Share Tech Mono' } }, beginAtZero: true }
                     }
                 }
             });
         }
 
-        window.addEventListener('DOMContentLoaded', () => {
+        function initCharts() {
             const ctxTimeline = document.getElementById('overviewTimelineChart').getContext('2d');
             new Chart(ctxTimeline, {
                 type: 'line',
@@ -617,9 +649,7 @@
                     plugins: { legend: { position: 'bottom', labels: { color: '#8a99ad', boxWidth: 12 } } }
                 }
             });
-
-            onGlobalUnitChange();
-        });
+        }
     </script>
 </body>
 </html>
