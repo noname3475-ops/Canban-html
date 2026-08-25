@@ -55,7 +55,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between selection:bg-cyan-500 selection:text-black">
 
-    <!-- Header з глобальним вибором підрозділу та календарем періоду -->
+    <!-- Header -->
     <header class="glass-card border-b border-cyan-900/50 sticky top-0 z-50 px-6 py-4 flex flex-wrap items-center justify-between gap-4">
         <div class="flex items-center space-x-4">
             <div class="w-3 h-3 bg-cyan-400 rounded-full animate-ping"></div>
@@ -65,7 +65,7 @@
             </div>
         </div>
 
-        <!-- Панель керування: Підрозділ + Календар періоду (з поточним днем) + Кнопка весь період -->
+        <!-- Панель керування: Період + Підрозділ -->
         <div class="flex flex-wrap items-center gap-3 w-full xl:w-auto justify-end">
             <!-- Вибір дат -->
             <div class="flex items-center space-x-2 bg-slate-900/80 border border-cyan-900 px-3 py-1.5 rounded-lg">
@@ -81,7 +81,7 @@
             <!-- Селектор підрозділів -->
             <div class="flex items-center space-x-2">
                 <span class="text-xs text-cyan-300 mono-font whitespace-nowrap">ПІДРОЗДІЛ:</span>
-                <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[320px]">
+                <select id="globalUnitSelect" onchange="onGlobalFilterChange()" class="bg-slate-900 border border-cyan-800 text-cyan-300 text-xs rounded-lg px-3 py-2 focus:outline-none focus:border-cyan-400 mono-font w-full sm:w-[340px]">
                     <option value="all">-- ВСІ ПОДІЛЕННЯ (ОБЛАСНИЙ ЗРІЗ) --</option>
                     
                     <optgroup label="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
@@ -129,7 +129,7 @@
                 <div class="glass-card p-5 rounded-xl border-l-4 border-cyan-400">
                     <p class="text-xs text-slate-400 uppercase mono-font">Всього матеріалів</p>
                     <h3 id="ovTotalDocs" class="mono-font text-3xl font-bold text-white mt-2">0</h3>
-                    <p class="text-[10px] text-cyan-400 mt-1">▲ За обраний період</p>
+                    <p class="text-[10px] text-cyan-400 mt-1">▲ За обраний підрозділ і період</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl border-l-4 border-emerald-400">
                     <p class="text-xs text-slate-400 uppercase mono-font">Накладено штрафів</p>
@@ -170,7 +170,7 @@
                 <div class="glass-card p-5 rounded-xl">
                     <p class="text-xs text-slate-400 uppercase mono-font">Матеріалів у підрозділі</p>
                     <h3 id="unitTotalDocs" class="mono-font text-3xl font-bold text-cyan-300 mt-2">0</h3>
-                    <p class="text-[10px] text-cyan-400 mt-1">За обраний період</p>
+                    <p class="text-[10px] text-cyan-400 mt-1">Вибраний орган поліції</p>
                 </div>
                 <div class="glass-card p-5 rounded-xl">
                     <p class="text-xs text-slate-400 uppercase mono-font">Сума накладених штрафів</p>
@@ -186,7 +186,7 @@
 
             <div class="glass-card p-6 rounded-xl">
                 <h3 class="mono-font text-sm text-cyan-400 mb-1 uppercase">// Топ поліцейських вибраного підрозділу</h3>
-                <p class="text-xs text-slate-400 mb-4">Навантаження працівників за вказаний проміжок часу</p>
+                <p class="text-xs text-slate-400 mb-4">Відображаються працівники виключно обраного органу поліції</p>
                 <div class="relative h-80">
                     <canvas id="unitOfficersChart"></canvas>
                 </div>
@@ -212,10 +212,10 @@
             <div id="explanationCard" class="glass-card p-6 rounded-xl border border-cyan-500/40 bg-slate-900/90 shadow-lg">
                 <div class="flex items-center space-x-3 mb-3">
                     <div class="w-2.5 h-2.5 bg-amber-400 rounded-full animate-pulse"></div>
-                    <h3 id="explanationTitle" class="mono-font text-sm text-cyan-300 uppercase tracking-wider">// Аудит повторюваності за період</h3>
+                    <h3 id="explanationTitle" class="mono-font text-sm text-cyan-300 uppercase tracking-wider">// Аудит повторюваності за підрозділом</h3>
                 </div>
                 <div id="repetitionExplanation" class="text-xs md:text-sm text-slate-300 leading-relaxed space-y-2">
-                    <p><strong class="text-cyan-400">Статус:</strong> Оберіть підрозділ та період для аналізу.</p>
+                    <p><strong class="text-cyan-400">Статус:</strong> Оберіть підрозділ для перегляду даних.</p>
                 </div>
             </div>
 
@@ -292,45 +292,82 @@
 
         Chart.register(barValuePlugin);
 
-        // Генератор базової масиви епізодів та подій за 2026 рік
-        function generateMasterData() {
-            const unitsList = [
-                'БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ', 
-                'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.', 
-                'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.',
-                'ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.',
-                'ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ'
-            ];
-            const officersList = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'СУХАЦЬКИЙ', 'МАТВІЄНКО', 'КОЛЕСНИК', 'ДАНИЛЕНКО'];
-            const articlesList = ['СТ.51 Ч.4 КУпАП', 'СТ.173 КУпАП', 'СТ.183 КУпАП', 'СТ.124 КУпАП', 'СТ.178 КУпАП'];
-            
-            let masterEpisodes = [];
-            for (let i = 1; i <= 200; i++) {
-                let unit = unitsList[i % unitsList.length];
-                let officer = officersList[(i * 3) % officersList.length];
-                let article = articlesList[(i * 2) % articlesList.length];
-                
-                let month = ((i % 8) + 1).toString().padStart(2, '0');
-                let day = ((i * 4) % 27 + 1).toString().padStart(2, '0');
-                let hour = (8 + (i % 12)).toString().padStart(2, '0');
-                let minute = (i * 11) % 60;
-                let minuteStr = minute < 10 ? '0' + minute : minute;
-                
-                masterEpisodes.push({
-                    date: `2026-${month}-${day} ${hour}:${minuteStr}`,
-                    unit: unit,
-                    officer: officer,
-                    article: article,
-                    fine: Math.floor(Math.random() * 2000) + 500,
-                    collected: Math.floor(Math.random() * 1500) + 200,
-                    desc: `Епізод #${i}: Зафіксовано дублювання за статтею ${article} підрозділом. Інспектор: ${officer}.`
-                });
+        // Генерація чіткої бази даних по конкретних підрозділах
+        function generateUnitDatabase() {
+            const unitsMap = {
+                'БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
+                    name: 'Білоцерківське РУП (Апарат)',
+                    baseDocs: 1431, fines: 777223, collected: 553401,
+                    officers: ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК', 'БАЙРАМОВ'],
+                    counts: [83, 79, 78, 77, 74],
+                    articles: [45, 30, 15, 10]
+                },
+                'ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
+                    name: 'Відділ поліції №1 (м. Сквира)',
+                    baseDocs: 302, fines: 120088, collected: 89216,
+                    officers: ['ПЕРЕСТЮК', 'СУХАЦЬКИЙ', 'ТОЛЯРОВСЬКИЙ', 'ФЕДОРЕНКО', 'СВІНЦИЦЬКИЙ'],
+                    counts: [87, 83, 58, 42, 28],
+                    articles: [50, 25, 15, 10]
+                },
+                'ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
+                    name: 'Відділення поліції №1 (смт Рокитне)',
+                    baseDocs: 285, fines: 145200, collected: 92100,
+                    officers: ['ВАСИЛЕНКО', 'АВРАМЕНКО', 'ПОЛУКЕЄВ', 'МАРЧЕНКО', 'КОВАЛЬЧУК'],
+                    counts: [87, 66, 63, 45, 24],
+                    articles: [40, 35, 15, 10]
+                },
+                'ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
+                    name: 'Відділ поліції №2 (м. Ірпінь)',
+                    baseDocs: 950, fines: 520000, collected: 340000,
+                    officers: ['ГУЦЕЛЮК', 'КОВАЛЕНКО', 'ПОВХ', 'МАТВІЄНКО'],
+                    counts: [95, 82, 64, 50],
+                    articles: [45, 30, 15, 10]
+                },
+                'ВІДДІЛ ПОЛІЦІЇ №3 (С. МИЛА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.': {
+                    name: 'Відділ поліції №3 (с. Мила)',
+                    baseDocs: 410, fines: 230000, collected: 150000,
+                    officers: ['ІВАНОВ', 'ПЕТРЕНКО', 'СИДОРЕНКО'],
+                    counts: [70, 55, 40],
+                    articles: [35, 35, 20, 10]
+                },
+                'ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
+                    name: 'Обухівське РУП (Апарат)',
+                    baseDocs: 1150, fines: 640000, collected: 410000,
+                    officers: ['МАТВІЄНКО', 'ДАНИЛЕНКО', 'КИРИЛЕНКО', 'ТАРАСЕНКО'],
+                    counts: [90, 75, 60, 45],
+                    articles: [40, 30, 20, 10]
+                },
+                'ВП№1 (М.КАГАРЛИК) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ': {
+                    name: 'ВП №1 (м. Кагарлик)',
+                    baseDocs: 240, fines: 98000, collected: 65000,
+                    officers: ['ШЕВЧЕНКО', 'БОЙКО', 'МЕЛЬНИК'],
+                    counts: [60, 45, 30],
+                    articles: [50, 25, 15, 10]
+                }
+            };
+
+            let episodes = [];
+            let i = 1;
+            for (let unitKey in unitsMap) {
+                let uData = unitsMap[unitKey];
+                for (let j = 0; j < Math.floor(uData.baseDocs / 35); j++) {
+                    episodes.push({
+                        date: `2026-0${(j % 7) + 1}-1${j % 9} 10:15`,
+                        unitKey: unitKey,
+                        unitName: uData.name,
+                        officer: uData.officers[j % uData.officers.length],
+                        article: j % 2 === 0 ? 'СТ.51 Ч.4 КУпАП' : 'СТ.173 КУпАП',
+                        fine: 1200,
+                        collected: 800,
+                        desc: `Епізод #${i}: Зафіксовано дублювання матеріалу за добу підрозділом ${uData.name}. Інспектор: ${uData.officers[j % uData.officers.length]}.`
+                    });
+                    i++;
+                }
             }
-            masterEpisodes.sort((a, b) => a.date.localeCompare(b.date));
-            return masterEpisodes;
+            return { unitsMap, episodes };
         }
 
-        const allMasterEpisodes = generateMasterData();
+        const { unitsMap, episodes: allMasterEpisodes } = generateUnitDatabase();
 
         let timelineChartInstance = null;
         let topUnitsChartInstance = null;
@@ -340,7 +377,6 @@
         let currentFilteredRows = [];
 
         window.addEventListener('DOMContentLoaded', () => {
-            // Встановлюємо період за замовчуванням: з початку року по сьогодні (2026-08-25)
             document.getElementById('globalDateFrom').value = "2026-01-01";
             document.getElementById('globalDateTo').value = "2026-08-25";
 
@@ -367,73 +403,94 @@
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
         }
 
-        // Головна функція інтерактивної фільтрації всіх даних дашборду
+        // Строга прив'язка даних до обраного підрозділу
         function onGlobalFilterChange() {
-            const selectedUnit = document.getElementById('globalUnitSelect').value;
+            const selectedUnitKey = document.getElementById('globalUnitSelect').value;
             const dateFrom = document.getElementById('globalDateFrom').value;
             const dateTo = document.getElementById('globalDateTo').value;
 
-            // Фільтрація базового масиву за підрозділом та датами
+            // Фільтрація епізодів
             let filtered = allMasterEpisodes.filter(row => {
                 const rowDateOnly = row.date.substring(0, 10);
                 if (dateFrom && rowDateOnly < dateFrom) return false;
                 if (dateTo && rowDateOnly > dateTo) return false;
-                if (selectedUnit !== 'all' && row.unit !== selectedUnit) return false;
+                if (selectedUnitKey !== 'all' && row.unitKey !== selectedUnitKey) return false;
                 return true;
             });
 
             currentFilteredRows = filtered;
 
-            // Розрахунок метрик
-            const totalDocs = filtered.length * 35;
-            const totalFines = filtered.reduce((acc, r) => acc + r.fine, 0) + (selectedUnit === 'all' ? 3200000 : 450000);
-            const totalCollected = filtered.reduce((acc, r) => acc + r.collected, 0) + (selectedUnit === 'all' ? 1800000 : 250000);
+            let totalDocs = 0;
+            let totalFinesStr = "0 грн";
+            let totalCollectedStr = "0 грн";
+            let activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН'];
+            let activeCounts = [80, 65, 50];
+            let activeArticles = [40, 30, 20, 10];
+
+            if (selectedUnitKey === 'all') {
+                // Обласний зріз: сумуємо по всіх підрозділах
+                for (let k in unitsMap) {
+                    totalDocs += unitsMap[k].baseDocs;
+                }
+                let sumFines = Object.values(unitsMap).reduce((acc, u) => acc + u.fines, 0);
+                let sumColl = Object.values(unitsMap).reduce((acc, u) => acc + u.collected, 0);
+                totalFinesStr = sumFines.toLocaleString() + ' грн';
+                totalCollectedStr = sumColl.toLocaleString() + ' грн';
+            } else {
+                // Строго конкретний підрозділ із таблиці
+                let uData = unitsMap[selectedUnitKey];
+                if (uData) {
+                    totalDocs = uData.baseDocs;
+                    totalFinesStr = uData.fines.toLocaleString() + ' грн';
+                    totalCollectedStr = uData.collected.toLocaleString() + ' грн';
+                    activeOfficers = uData.officers;
+                    activeCounts = uData.counts;
+                    activeArticles = uData.articles;
+                }
+            }
+
             const sameDayCount = filtered.length;
 
-            // Оновлення карток загального зрізу
+            // Оновлення карток
             document.getElementById('ovTotalDocs').innerText = totalDocs.toLocaleString();
-            document.getElementById('ovFinesImposed').innerText = totalFines.toLocaleString() + ' грн';
-            document.getElementById('ovFinesCollected').innerText = totalCollected.toLocaleString() + ' грн';
+            document.getElementById('ovFinesImposed').innerText = totalFinesStr;
+            document.getElementById('ovFinesCollected').innerText = totalCollectedStr;
             document.getElementById('ovSameDay').innerText = sameDayCount;
 
-            // Оновлення карток підрозділу
             document.getElementById('unitTotalDocs').innerText = totalDocs.toLocaleString();
-            document.getElementById('unitFinesImposed').innerText = totalFines.toLocaleString() + ' грн';
-            document.getElementById('unitFinesCollected').innerText = totalCollected.toLocaleString() + ' грн';
+            document.getElementById('unitFinesImposed').innerText = totalFinesStr;
+            document.getElementById('unitFinesCollected').innerText = totalCollectedStr;
 
-            // Оновлення повторюваності
             document.getElementById('repTotal').innerText = (sameDayCount * 2) + ' випадків';
             document.getElementById('repSameDay').innerText = sameDayCount + ' епізоди';
 
-            // Таблиця та розбір епізодів
-            updateRepetitionSection(selectedUnit, filtered);
-
-            // Оновлення графіків відповідно до фільтрів
-            updateCharts(filtered, selectedUnit);
+            updateRepetitionSection(selectedUnitKey, filtered);
+            updateCharts(filtered, selectedUnitKey, activeOfficers, activeCounts, activeArticles);
         }
 
-        function updateRepetitionSection(selectedUnit, filtered) {
+        function updateRepetitionSection(selectedUnitKey, filtered) {
             const tableContainer = document.getElementById('repetitionTableContainer');
             const explanationTitle = document.getElementById('explanationTitle');
             const explanationBody = document.getElementById('repetitionExplanation');
 
-            if (selectedUnit === 'all') {
+            if (selectedUnitKey === 'all') {
                 tableContainer.classList.add('hidden');
                 explanationTitle.innerText = '// ОБЛАСНИЙ ЗВЕДЕНИЙ АУДИТ ЗА ПЕРІОД';
                 explanationBody.innerHTML = `
-                    <p><strong class="text-cyan-400">Обласний зріз:</strong> За обраний період та фільтрами зафіксовано <span class="text-white font-bold">${filtered.length} епізодів</span> дублювання.</p>
-                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть конкретний районний підрозділ</span> у випадаючому списку вище, щоб переглянути поіменний реєстр епізодів.</p>
+                    <p><strong class="text-cyan-400">Обласний зріз:</strong> Зафіксовано <span class="text-white font-bold">${filtered.length} епізодів</span> дублювання по всій області.</p>
+                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть конкретний підрозділ у випадаючому списку вище</span>, щоб завантажити дані та поіменний реєстр епізодів цього органу.</p>
                 `;
             } else {
                 tableContainer.classList.remove('hidden');
-                explanationTitle.innerText = `// РЕЄСТР ЕПІЗОДІВ ПІДРОЗДІЛУ`;
+                let unitName = unitsMap[selectedUnitKey] ? unitsMap[selectedUnitKey].name : 'Підрозділ';
+                explanationTitle.innerText = `// РЕЄСТР ЕПІЗОДІВ: ${unitName}`;
 
                 const tbody = document.getElementById('repetitionTableBody');
                 tbody.innerHTML = '';
 
                 if (filtered.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="5" class="px-4 py-4 text-center text-slate-500">За обраний період у цьому підрозділі дублів не знайдено</td></tr>`;
-                    explanationBody.innerHTML = `<p class="text-emerald-400">За вказаний проміжок часу в цьому підрозділі дублювань не зафіксовано.</p>`;
+                    explanationBody.innerHTML = `<p class="text-emerald-400">У вибраному підрозділі за вказаний період дублювань не зафіксовано.</p>`;
                 } else {
                     explanationBody.innerHTML = `
                         <p><strong class="text-cyan-400">Суть вибраного епізоду:</strong> ${filtered[0].desc}</p>
@@ -444,7 +501,7 @@
                         tbody.innerHTML += `
                             <tr onclick="selectRepetitionRow(${idx})" class="hover:bg-cyan-950/40 cursor-pointer transition-colors">
                                 <td class="px-4 py-3 text-amber-400">${row.date}</td>
-                                <td class="px-4 py-3 text-slate-300">${row.unit.substring(0, 35)}...</td>
+                                <td class="px-4 py-3 text-slate-300">${row.unitName}</td>
                                 <td class="px-4 py-3 font-semibold text-white">${row.officer}</td>
                                 <td class="px-4 py-3 text-slate-400">${row.article}</td>
                                 <td class="px-4 py-3 text-right text-red-400 font-bold">2 епізоди (доба)</td>
@@ -460,7 +517,7 @@
                 const row = currentFilteredRows[index];
                 document.getElementById('repetitionExplanation').innerHTML = `
                     <p><strong class="text-cyan-400">Деталі епізоду (${row.date}):</strong> ${row.desc}</p>
-                    <p class="text-slate-400 text-[11px] mt-1">Співробітник: <span class="text-white font-semibold">${row.officer}</span> | Стаття КУпАП: <span class="text-amber-300">${row.article}</span></p>
+                    <p class="text-slate-400 text-[11px] mt-1">Підрозділ: <span class="text-cyan-300">${row.unitName}</span> | Співробітник: <span class="text-white font-semibold">${row.officer}</span> | Стаття КУпАП: <span class="text-amber-300">${row.article}</span></p>
                 `;
             }
         }
@@ -468,13 +525,13 @@
         function initChartsSkeleton() {
             timelineChartInstance = new Chart(document.getElementById('overviewTimelineChart').getContext('2d'), {
                 type: 'line',
-                data: { labels: [], datasets: [{ borderColor: '#00f0ff', backgroundColor: 'rgba(0, 240, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
+                data: { labels: ['Січ', 'Лют', 'Бер', 'Квіт', 'Трав', 'Черв', 'Лип', 'Сер'], datasets: [{ data: [120, 140, 160, 150, 180, 170, 190, 165], borderColor: '#00f0ff', backgroundColor: 'rgba(0, 240, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
             topUnitsChartInstance = new Chart(document.getElementById('overviewTopUnitsChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: [], datasets: [{ backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6'], borderRadius: 4 }] },
+                data: { labels: ['Білоцерківське РУП', 'Ірпінь ВП', 'Обухівське РУП', 'Сквира ВП'], datasets: [{ data: [1431, 950, 1150, 302], backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6'], borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
@@ -486,7 +543,7 @@
 
             articlesChartInstance = new Chart(document.getElementById('articlesChart').getContext('2d'), {
                 type: 'doughnut',
-                data: { labels: ['Ст. 183', 'Ст. 51', 'Ст. 173', 'Інші'], datasets: [{ data: [40, 25, 20, 15], backgroundColor: ['#00f0ff', '#3b82f6', '#8b5cf6', '#1e293b'] }] },
+                data: { labels: ['Ст. 183', 'Ст. 51', 'Ст. 173', 'Інші'], datasets: [{ data: [45, 30, 15, 10], backgroundColor: ['#00f0ff', '#3b82f6', '#8b5cf6', '#1e293b'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#8a99ad', boxWidth: 12 } } } }
             });
 
@@ -497,42 +554,15 @@
             });
         }
 
-        function updateCharts(filtered, selectedUnit) {
-            let monthCounts = {'Січ': 0, 'Лют': 0, 'Бер': 0, 'Квіт': 0, 'Трав': 0, 'Черв': 0, 'Лип': 0, 'Сер': 0};
-            filtered.forEach(r => {
-                let mNum = r.date.substring(5, 7);
-                let mNames = {'01': 'Січ', '02': 'Лют', '03': 'Бер', '04': 'Квіт', '05': 'Трав', '06': 'Черв', '07': 'Лип', '08': 'Сер'};
-                if(mNames[mNum]) monthCounts[mNames[mNum]] += 15;
-            });
-
-            timelineChartInstance.data.labels = Object.keys(monthCounts);
-            timelineChartInstance.data.datasets[0].data = Object.values(monthCounts);
-            timelineChartInstance.update();
-
-            topUnitsChartInstance.data.labels = selectedUnit === 'all' ? ['Білоцерківське РУП', 'Бучанське РУП', 'Обухівське РУП', 'Сквира ВП'] : [selectedUnit.substring(0, 25) + '...'];
-            topUnitsChartInstance.data.datasets[0].data = selectedUnit === 'all' ? [filtered.length * 12 + 100, filtered.length * 10 + 80, filtered.length * 8 + 60, filtered.length * 5 + 30] : [filtered.length * 20 + 50];
-            topUnitsChartInstance.update();
-
-            let officerMap = {};
-            filtered.forEach(r => {
-                officerMap[r.officer] = (officerMap[r.officer] || 0) + 1;
-            });
-            let sortedOfficers = Object.keys(officerMap).sort((a,b) => officerMap[b] - officerMap[a]).slice(0, 5);
-            if(sortedOfficers.length === 0) sortedOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК'];
-            
-            officersChartInstance.data.labels = sortedOfficers;
-            officersChartInstance.data.datasets[0].data = sortedOfficers.map(o => officerMap[o] ? officerMap[o] * 8 : Math.floor(Math.random() * 30) + 10);
+        function updateCharts(filtered, selectedUnitKey, activeOfficers, activeCounts, activeArticles) {
+            // Оновлення графіку офіцерів конкретного підрозділу
+            officersChartInstance.data.labels = activeOfficers;
+            officersChartInstance.data.datasets[0].data = activeCounts;
             officersChartInstance.update();
 
-            let artMap = {};
-            filtered.forEach(r => { artMap[r.article] = (artMap[r.article] || 0) + 1; });
-            let artLabels = Object.keys(artMap);
-            let artData = Object.values(artMap);
-            if(artLabels.length > 0) {
-                articlesChartInstance.data.labels = artLabels;
-                articlesChartInstance.data.datasets[0].data = artData;
-                articlesChartInstance.update();
-            }
+            // Оновлення структури статей КУпАП підрозділу
+            articlesChartInstance.data.datasets[0].data = activeArticles;
+            articlesChartInstance.update();
         }
     </script>
 </body>
