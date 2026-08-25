@@ -332,11 +332,13 @@
 
         Chart.register(barValuePlugin);
 
-        // Генератор унікальних даних для всіх 28 підрозділів
+        let unitsMap = {};
+        let allEpisodes = [];
+
         function generateCompleteUnitDatabase() {
             const selectOptions = document.querySelectorAll('#globalUnitSelect option');
-            let unitsMap = {};
-            let allEpisodes = [];
+            unitsMap = {};
+            allEpisodes = [];
             let episodeCounter = 1;
 
             const surnamePool = [
@@ -405,11 +407,7 @@
                     episodeCounter++;
                 }
             });
-
-            return { unitsMap, allEpisodes };
         }
-
-        const { unitsMap, allEpisodes } = generateCompleteUnitDatabase();
 
         let timelineChartInstance = null;
         let topUnitsChartInstance = null;
@@ -422,6 +420,7 @@
             document.getElementById('globalDateFrom').value = "2026-01-01";
             document.getElementById('globalDateTo').value = "2026-08-25";
 
+            generateCompleteUnitDatabase();
             initChartsSkeleton();
             onGlobalFilterChange();
         });
@@ -445,9 +444,30 @@
             activeBtn.classList.add('glass-card-active', 'text-cyan-300');
         }
 
-        // Логіка фільтрації та побудови графіків
+        function onGlobalFilterQuery(selectedUnitKey) {
+            // Передаємо інформацію у контекст тултипа графіків
+            if(officersChartInstance) {
+                officersChartInstance.options.plugins.tooltip.callbacks.title = function(context) {
+                    let index = context[0].dataIndex;
+                    let officerName = context[0].label;
+                    if (selectedUnitKey === 'all') {
+                        // Мапа підрозділів для обласного зрізу
+                        const regionalUnits = [
+                            "Білоцерківське РУП (Апарат)", 
+                            "Відділ поліції №2 (м. Ірпінь)", 
+                            "Обухівське РУП (Апарат)", 
+                            "Броварське РУП (Апарат)"
+                        ];
+                        let unitSub = regionalUnits[index] || "Обласний підрозділ";
+                        return `${officerName} [ Підрозділ: ${unitSub} ]`;
+                    }
+                    return `Співробітник: ${officerName}`;
+                };
+            }
+        }
+
         function onGlobalFilterChange() {
-            const selectedUnitKey = document.getElementById('globalUnitSelect'].value;
+            const selectedUnitKey = document.getElementById('globalUnitSelect').value;
             const dateFrom = document.getElementById('globalDateFrom').value;
             const dateTo = document.getElementById('globalDateTo').value;
 
@@ -469,19 +489,17 @@
             let activeArticles = [40, 30, 20, 10];
 
             if (selectedUnitKey === 'all') {
-                // Обласний зріз: сумуємо всі матеріали і формуємо топ обласних рекордсменів
                 for (let k in unitsMap) {
                     totalDocs += unitsMap[k].baseDocs;
                     totalFines += unitsMap[k].fines;
                     totalCollected += unitsMap[k].collected;
                 }
-                activeOfficers = ['ЯМБУРЕНКО (Область)', 'ТАРАДАЙ (Область)', 'ІЛЬЇН (Область)', 'ГУЦЕЛЮК (Область)'];
-                activeCounts = [310, 285, 260, 240];
+                activeOfficers = ['ЯМБУРЕНКО', 'ТАРАДАЙ', 'ІЛЬЇН', 'ГУЦЕЛЮК'];
+                activeCounts = [110, 110, 95, 85];
                 
                 document.getElementById('officersSectionTitle').innerText = "// ТОП ПОЛІЦЕЙСЬКИХ ПО ВСІЙ ОБЛАСТІ (ЗВЕДЕНИЙ РЕЙТИНГ)";
-                document.getElementById('officersSectionDesc').innerText = "Працівники з найбільшими показниками навантаження по регіону";
+                document.getElementById('officersSectionDesc').innerText = "Наведіть на прізвище або стовпчик, щоб переглянути підрозділ співробітника";
             } else {
-                // Конкретний підрозділ
                 let uData = unitsMap[selectedUnitKey];
                 if (uData) {
                     totalDocs = uData.baseDocs;
@@ -509,6 +527,7 @@
             document.getElementById('repTotal').innerText = (sameDayCount * 2) + ' випадків';
             document.getElementById('repSameDay').innerText = sameDayCount + ' епізоди';
 
+            onGlobalFilterQuery(selectedUnitKey);
             updateRepetitionSection(selectedUnitKey, filtered);
             updateCharts(filtered, selectedUnitKey, activeOfficers, activeCounts, activeArticles);
         }
@@ -524,7 +543,7 @@
                 explanationTitle.innerText = '// ОБЛАСНИЙ ЗВЕДЕНИЙ АУДИТ ЗА ПЕРІОД';
                 explanationBody.innerHTML = `
                     <p><strong class="text-cyan-400">Обласний зріз:</strong> Зафіксовано <span class="text-white font-bold">${filtered.length} епізодів</span> дублювання по всій області.</p>
-                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть конкретний підрозділ у випадаючому списку вище</span>, щоб переглянути його унікальний поіменний реєстр епізодів.</p>
+                    <p class="text-slate-400 text-[11px]">👉 <span class="text-cyan-300 font-semibold">Оберіть конкретний підрозділ у випадаючому списку вище</span>, щоб переглянути його поіменний реєстр епізодів.</p>
                 `;
             } else {
                 tableContainer.classList.remove('hidden');
@@ -585,7 +604,24 @@
             officersChartInstance = new Chart(document.getElementById('unitOfficersChart').getContext('2d'), {
                 type: 'bar',
                 data: { labels: [], datasets: [{ backgroundColor: '#00f0ff', borderRadius: 6, barThickness: 35 }] },
-                options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+                options: { 
+                    responsive: true, 
+                    maintainAspectRatio: false, 
+                    plugins: { 
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                title: function(context) {
+                                    return `Співробітник: ${context[0].label}`;
+                                },
+                                label: function(context) {
+                                    return ` Складено матеріалів: ${context.raw}`;
+                                }
+                            }
+                        }
+                    }, 
+                    scales: { y: { beginAtZero: true } } 
+                }
             });
 
             articlesChartInstance = new Chart(document.getElementById('articlesChart').getContext('2d'), {
