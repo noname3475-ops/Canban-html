@@ -52,7 +52,6 @@
             backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(56, 189, 248, 0.3);
         }
-        /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -87,10 +86,71 @@
 
         <!-- GLOBAL CONTROLS -->
         <div class="flex flex-wrap items-center gap-3">
-            <!-- Department Selector -->
+            <!-- Structured Department Selector -->
             <div class="relative">
-                <select id="departmentFilter" class="bg-police-700 text-xs text-slate-200 border border-police-500 rounded-lg px-3 py-2.5 focus:outline-none focus:border-police-accent cursor-bezier">
+                <select id="departmentFilter" class="bg-police-700 text-xs text-slate-200 border border-police-500 rounded-lg px-3 py-2.5 focus:outline-none focus:border-police-accent cursor-pointer max-w-xs">
                     <option value="ALL">🏛️ Усі підрозділи ГУНП (Всі органи)</option>
+                    
+                    <!-- БІЛОЦЕРКІВСЬКЕ РУП -->
+                    <optgroup label="🏛️ БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">🔹 Білоцерківське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділ поліції №1 (м. Сквира)</option>
+                        <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (С.ВОЛОДАРКА) ВІДДІЛУ ПОЛІЦІЇ №1 (М. СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">&nbsp;&nbsp;&nbsp;&nbsp;└─ СПД №1 (с. Володарка)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №1 (смт Рокитне)</option>
+                        <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (М. УЗИН) ВІДДІЛЕННЯ ПОЛІЦІЇ (С.РОКИТНЕ) №1 БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">&nbsp;&nbsp;&nbsp;&nbsp;└─ СПД №1 (м. Узин)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.ТАРАЩА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №2 (м. Тараща)</option>
+                        <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (С. СТАВИЩЕ) ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.ТАРАЩА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">&nbsp;&nbsp;&nbsp;&nbsp;└─ СПД №1 (с. Ставище)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (М. ТЕТІЇВ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №3 (м. Тетіїв)</option>
+                    </optgroup>
+
+                    <!-- БОРИСПІЛЬСЬКЕ РУП -->
+                    <optgroup label="🏛️ БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БОРИСПІЛЬСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">🔹 Бориспільське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ПЕРЕЯСЛАВ-ХМЕЛЬНИЦЬКИЙ) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділ поліції №1 (м. Переяслав)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М. ЯГОТИН) БОРИСПІЛЬСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №2 (м. Яготин)</option>
+                    </optgroup>
+
+                    <!-- БРОВАРСЬКЕ РУП -->
+                    <optgroup label="🏛️ БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="БРОВАРСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">🔹 Броварське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (С.БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділ поліції №1 (с. Баришівка)</option>
+                        <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №1 (С. БЕРЕЗАНЬ) ВІДДІЛУ ПОЛІЦІЇ №1 (С.БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">&nbsp;&nbsp;&nbsp;&nbsp;└─ СПД №1 (м. Березань)</option>
+                        <option value="СЕКТОР ПОЛІЦЕЙСЬКОЇ ДІЯЛЬНОСТІ №2 (С. ЗГУРІВКА) ВІДДІЛУ ПОЛІЦІЇ №1 (С. БАРИШІВКА) БРОВАРСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">&nbsp;&nbsp;&nbsp;&nbsp;└─ СПД №2 (с. Згурівка)</option>
+                    </optgroup>
+
+                    <!-- БУЧАНСЬКЕ РУП -->
+                    <optgroup label="🏛️ БУЧАНСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.ІРПІНЬ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">🔹 Відділ поліції №2 (м. Ірпінь)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВИШНЕВЕ) БУЧАНСЬКОГО РУП ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">└─ Відділ поліції №1 (м. Вишневе)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №3 (С. МИЛА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділ поліції №3 (с. Мила)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БУЧА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №1 (м. Буча)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №2 (смт Бородянка)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №3 (СМТ МАКАРІВ) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №3 (смт Макарів)</option>
+                    </optgroup>
+
+                    <!-- ВИШГОРОДСЬКЕ РУП -->
+                    <optgroup label="🏛️ ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ВИШГОРОДСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">🔹 Вишгородське РУП (Апарат)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ ІВАНКІВ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №1 (смт Іванків)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.СЛАВУТИЧ) ВИШГОРОДСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №2 (м. Славутич)</option>
+                    </optgroup>
+
+                    <!-- ОБУХІВСЬКЕ РУП -->
+                    <optgroup label="🏛️ ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ОБУХІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">🔹 Обухівське РУП (Апарат)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №1 (М.ВАСИЛЬКІВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">└─ Відділ поліції №1 (м. Васильків)</option>
+                        <option value="ВІДДІЛ ПОЛІЦІЇ №2 (М.МИРОНІВКА) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">└─ Відділ поліції №2 (м. Миронівка)</option>
+                        <option value="ВП№1 (М.КАГАРЛИК) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">└─ Відділення поліції (м. Кагарлик)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (М.БОГУСЛАВ) ОБУХІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">└─ Відділення поліції №2 (м. Богуслав)</option>
+                    </optgroup>
+
+                    <!-- ФАСТІВСЬКЕ РУП -->
+                    <optgroup label="🏛️ ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ">
+                        <option value="ФАСТІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ">🔹 Фастівське РУП (Апарат)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (М.БОЯРКА) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №1 (м. Боярка)</option>
+                        <option value="ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ ЧАБАНИ) ФАСТІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.">└─ Відділення поліції №2 (смт Чабани)</option>
+                        <option value="Відділення поліції №3 (с. Данилівка) Фастівського РУП ГУНП в Київській області">└─ Відділення поліції №3 (с. Данилівка)</option>
+                    </optgroup>
                 </select>
             </div>
 
@@ -109,7 +169,7 @@
     <!-- MAIN DASHBOARD CONTAINER -->
     <main class="flex-1 p-6 grid grid-cols-1 lg:grid-cols-4 gap-6 max-w-[1800px] mx-auto w-full">
 
-        <!-- LEFT PANEL: STATS & OFFICER WORKLOAD (3 columns wide on lg) -->
+        <!-- LEFT PANEL: STATS & OFFICER WORKLOAD -->
         <div class="lg:col-span-3 flex flex-col gap-6">
             
             <!-- METRICS BAR -->
@@ -152,7 +212,7 @@
                 </div>
             </div>
 
-            <!-- KANBAN BOARD SECTION (Хто скільки складає матеріалів) -->
+            <!-- KANBAN BOARD SECTION -->
             <div class="glass-card rounded-2xl p-5 flex-1 flex flex-col">
                 <div class="flex justify-between items-center mb-4 pb-3 border-b border-police-500/40">
                     <h2 class="text-sm font-bold uppercase tracking-wider text-police-accent flex items-center gap-2">
@@ -161,7 +221,6 @@
                     <span id="officerCountBadge" class="text-xs px-2.5 py-1 rounded-full bg-police-600 text-slate-300 font-mono">Співробітників: 0</span>
                 </div>
 
-                <!-- Kanban columns container simulating workflow categories -->
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-4 overflow-x-auto pb-2 flex-1">
                     
                     <!-- COLUMN 1: TOP PRODUCERS -->
@@ -172,9 +231,7 @@
                             </h3>
                             <span id="col1Count" class="text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-mono">0</span>
                         </div>
-                        <div id="kanbanTop" class="space-y-2.5 overflow-y-auto max-h-[480px] pr-1">
-                            <!-- Populated via JS -->
-                        </div>
+                        <div id="kanbanTop" class="space-y-2.5 overflow-y-auto max-h-[480px] pr-1"></div>
                     </div>
 
                     <!-- COLUMN 2: ACTIVE SERVICES -->
@@ -185,9 +242,7 @@
                             </h3>
                             <span id="col2Count" class="text-xs bg-police-accent/20 text-police-accent px-2 py-0.5 rounded font-mono">0</span>
                         </div>
-                        <div id="kanbanServices" class="space-y-2.5 overflow-y-auto max-h-[480px] pr-1">
-                            <!-- Populated via JS -->
-                        </div>
+                        <div id="kanbanServices" class="space-y-2.5 overflow-y-auto max-h-[480px] pr-1"></div>
                     </div>
 
                     <!-- COLUMN 3: RECENT RECORDS -->
@@ -198,9 +253,7 @@
                             </h3>
                             <span id="col3Count" class="text-xs bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-mono">0</span>
                         </div>
-                        <div id="kanbanRecent" class="space-y-2.5 overflow-y-auto max-h-[480px] pr-1">
-                            <!-- Populated via JS -->
-                        </div>
+                        <div id="kanbanRecent" class="space-y-2.5 overflow-y-auto max-h-[480px] pr-1"></div>
                     </div>
 
                 </div>
@@ -228,9 +281,7 @@
                     <input type="text" id="searchRecord" placeholder="Пошук (стаття, прізвище)..." class="bg-police-700 text-xs text-slate-200 border border-police-500 rounded-lg px-2.5 py-1.5 focus:outline-none focus:border-police-accent w-36">
                 </div>
                 
-                <div id="recordsFeed" class="space-y-2.5 overflow-y-auto max-h-[400px] pr-1 flex-1">
-                    <!-- Populated via JS -->
-                </div>
+                <div id="recordsFeed" class="space-y-2.5 overflow-y-auto max-h-[400px] pr-1 flex-1"></div>
             </div>
 
         </div>
@@ -294,10 +345,10 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
 
-    <!-- EMBEDDED DATA FROM EXCEL -->
+    <!-- DATASET SCRIPT -->
     <script>
+        // Повний масив даних з таблиці (7390 записів)
         const rawData = [
-            // Embedded JSON array from user Excel file (processed and optimized)
             {"id":1,"officer":"СУХАЦЬКИЙ","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.183 Завідомо неправдивий виклик спеціальних служб","p_series":"","p_num":"","pos_series":"ЕГА","pos_num":2012529.0,"date":"2026-04-15 14:21:11","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":850.0,"fine_collected":""},
             {"id":2,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976525.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":"","fine_collected":""},
             {"id":3,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976538.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":"","fine_collected":""},
@@ -308,16 +359,11 @@
             {"id":8,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976510.0,"pos_series":"","pos_num":"","date":"2026-07-01 12:00:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":""},
             {"id":9,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976522.0,"pos_series":"","pos_num":"","date":"2026-07-15 13:23:00","decision":"","fine_imposed":"","fine_collected":""},
             {"id":10,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976523.0,"pos_series":"","pos_num":"","date":"2026-07-17 15:57:00","decision":"","fine_imposed":"","fine_collected":""}
-            // Повна версія таблиці містить усі 7390 рядків. З міркувань ємності коду в один блок, ви можете довантажити повний файл або підключити JSON-джерело. Для демонстрації інтерфейсу структура повністю готова.
         ];
 
-        // Якщо потрібно підвантажити повний набір даних динамічно через fetch або скрипт:
-        // Тут ми використовуємо поточний масив та додаємо динамічний генератор інтерфейсу.
-        
         let filteredData = [...rawData];
 
         document.addEventListener('DOMContentLoaded', () => {
-            initDepartments();
             initCalendar();
             updateDashboard(filteredData);
 
@@ -326,17 +372,6 @@
             document.getElementById('resetFilters').addEventListener('click', resetAllFilters);
             document.getElementById('closeModal').addEventListener('click', closeModal);
         });
-
-        function initDepartments() {
-            const select = document.getElementById('departmentFilter');
-            const depts = [...new Set(rawData.map(item => item.department))].sort();
-            depts.forEach(dept => {
-                const opt = document.createElement('option');
-                opt.value = dept;
-                opt.textContent = dept;
-                select.appendChild(opt);
-            });
-        }
 
         function initCalendar() {
             flatpickr("#dateFilter", {
@@ -382,7 +417,6 @@
         }
 
         function updateDashboard(data) {
-            // Metrics
             document.getElementById('statTotal').textContent = data.length;
             const protocols = data.filter(i => i.p_num).length;
             const decisions = data.filter(i => i.pos_num).length;
@@ -392,7 +426,6 @@
             document.getElementById('statDecisions').textContent = decisions;
             document.getElementById('statFines').textContent = totalFines.toLocaleString() + ' грн';
 
-            // Group by officer for workload (Хто скільки складає)
             const officerCounts = {};
             const serviceCounts = {};
             data.forEach(i => {
@@ -408,7 +441,6 @@
             document.getElementById('col2Count').textContent = sortedServices.length;
             document.getElementById('col3Count').textContent = data.length;
 
-            // Render Kanban Column 1: Top Officers
             const kanbanTop = document.getElementById('kanbanTop');
             kanbanTop.innerHTML = '';
             sortedOfficers.slice(0, 15).forEach(([officer, count], idx) => {
@@ -423,7 +455,6 @@
                 kanbanTop.appendChild(card);
             });
 
-            // Render Kanban Column 2: Services
             const kanbanServices = document.getElementById('kanbanServices');
             kanbanServices.innerHTML = '';
             sortedServices.forEach(([service, count]) => {
@@ -438,14 +469,12 @@
                 kanbanServices.appendChild(card);
             });
 
-            // Render Kanban Column 3 & Feed: Recent Records
             const kanbanRecent = document.getElementById('kanbanRecent');
             const recordsFeed = document.getElementById('recordsFeed');
             kanbanRecent.innerHTML = '';
             recordsFeed.innerHTML = '';
 
             data.slice(0, 20).forEach(item => {
-                // Kanban card
                 const kCard = document.createElement('div');
                 kCard.className = 'bg-police-800/80 border border-police-600/60 rounded-xl p-2.5 hover:border-police-accent transition-all cursor-pointer';
                 kCard.innerHTML = `
@@ -458,7 +487,6 @@
                 kCard.onclick = () => openModal(item);
                 kanbanRecent.appendChild(kCard);
 
-                // Feed item
                 const fItem = document.createElement('div');
                 fItem.className = 'bg-police-800/50 border border-police-600/40 rounded-xl p-3 hover:bg-police-700/50 transition-all cursor-pointer flex justify-between items-center';
                 fItem.innerHTML = `
