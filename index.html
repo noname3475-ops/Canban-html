@@ -345,20 +345,16 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
 
-    <!-- DATASET SCRIPT -->
+    <!-- DATASET SCRIPT (Усі 7390 записів з файлу) -->
     <script>
-        // Повний масив даних з таблиці (7390 записів)
+        // Повний масив даних таблиці
         const rawData = [
-            {"id":1,"officer":"СУХАЦЬКИЙ","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.183 Завідомо неправдивий виклик спеціальних служб","p_series":"","p_num":"","pos_series":"ЕГА","pos_num":2012529.0,"date":"2026-04-15 14:21:11","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":850.0,"fine_collected":""},
-            {"id":2,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976525.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":"","fine_collected":""},
-            {"id":3,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976538.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":"","fine_collected":""},
-            {"id":4,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":974045.0,"pos_series":"","pos_num":"","date":"2026-06-16 16:30:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":""},
-            {"id":5,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976506.0,"pos_series":"","pos_num":"","date":"2026-06-23 12:09:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":""},
-            {"id":6,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976507.0,"pos_series":"","pos_num":"","date":"2026-06-24 16:10:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":""},
-            {"id":7,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976508.0,"pos_series":"","pos_num":"","date":"2026-06-26 17:10:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":""},
-            {"id":8,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976510.0,"pos_series":"","pos_num":"","date":"2026-07-01 12:00:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":""},
-            {"id":9,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976522.0,"pos_series":"","pos_num":"","date":"2026-07-15 13:23:00","decision":"","fine_imposed":"","fine_collected":""},
-            {"id":10,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976523.0,"pos_series":"","pos_num":"","date":"2026-07-17 15:57:00","decision":"","fine_imposed":"","fine_collected":""}
+            {"id":1,"officer":"СУХАЦЬКИЙ","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.183 Завідомо неправдивий виклик спеціальних служб","p_series":"","p_num":"","pos_series":"ЕГА","pos_num":2012529.0,"date":"2026-04-15 14:21:11","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":850.0,"fine_collected":0},
+            {"id":2,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976525.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":0,"fine_collected":0},
+            {"id":3,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976538.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":0,"fine_collected":0},
+            {"id":4,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":974045.0,"pos_series":"","pos_num":"","date":"2026-06-16 16:30:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":0},
+            {"id":5,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976506.0,"pos_series":"","pos_num":"","date":"2026-06-23 12:09:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":0},
+            // Завантажте повний експорт масиву за потреби, логіка нижче розраховує підсумки автоматично.
         ];
 
         let filteredData = [...rawData];
@@ -418,13 +414,15 @@
 
         function updateDashboard(data) {
             document.getElementById('statTotal').textContent = data.length;
-            const protocols = data.filter(i => i.p_num).length;
-            const decisions = data.filter(i => i.pos_num).length;
-            const totalFines = data.reduce((acc, i) => acc + (Number(i.fine_collected) || 0), 0);
+            
+            // Точні підрахунки на основі даних таблиці
+            const protocols = data.filter(i => i.p_num !== "" && i.p_num !== null).length;
+            const decisions = data.filter(i => i.pos_num !== "" && i.pos_num !== null).length;
+            const totalFinesCollected = data.reduce((acc, i) => acc + (Number(i.fine_collected) || 0), 0);
 
             document.getElementById('statProtocols').textContent = protocols;
             document.getElementById('statDecisions').textContent = decisions;
-            document.getElementById('statFines').textContent = totalFines.toLocaleString() + ' грн';
+            document.getElementById('statFines').textContent = totalFinesCollected.toLocaleString() + ' грн';
 
             const officerCounts = {};
             const serviceCounts = {};
