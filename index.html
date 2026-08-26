@@ -154,9 +154,9 @@
                 </select>
             </div>
 
-            <!-- Date Picker Filter -->
+            <!-- Period Range Picker Filter (з - по) -->
             <div class="relative">
-                <input type="text" id="dateFilter" placeholder="📅 Фільтр за датою..." class="bg-police-700 text-xs text-slate-200 border border-police-500 rounded-lg px-3 py-2.5 focus:outline-none focus:border-police-accent w-48 cursor-pointer">
+                <input type="text" id="dateRangeFilter" placeholder="📅 Період (з — по)..." class="bg-police-700 text-xs text-slate-200 border border-police-500 rounded-lg px-3 py-2.5 focus:outline-none focus:border-police-accent w-56 cursor-pointer font-mono">
             </div>
 
             <!-- Reset Button -->
@@ -267,7 +267,7 @@
             <!-- CALENDAR WIDGET -->
             <div class="glass-card rounded-2xl p-4 flex flex-col items-center">
                 <h3 class="text-xs font-bold uppercase tracking-wider text-slate-300 mb-3 w-full text-left flex items-center gap-2">
-                    <i class="fa-regular fa-calendar-days text-police-accent"></i> Календар подій та дат
+                    <i class="fa-regular fa-calendar-days text-police-accent"></i> Інтерактивний календар
                 </h3>
                 <div id="inlineCalendar" class="w-full flex justify-center"></div>
             </div>
@@ -345,19 +345,18 @@
     <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
     <script src="https://npmcdn.com/flatpickr/dist/l10n/uk.js"></script>
 
-    <!-- DATASET SCRIPT (Усі 7390 записів з файлу) -->
+    <!-- DATASET SCRIPT -->
     <script>
-        // Повний масив даних таблиці
         const rawData = [
             {"id":1,"officer":"СУХАЦЬКИЙ","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.183 Завідомо неправдивий виклик спеціальних служб","p_series":"","p_num":"","pos_series":"ЕГА","pos_num":2012529.0,"date":"2026-04-15 14:21:11","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":850.0,"fine_collected":0},
             {"id":2,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976525.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":0,"fine_collected":0},
             {"id":3,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.51 Ч.4 Багаторазове повторне протягом року дрібне викр.ч/майна","p_series":"ВАД","p_num":976538.0,"pos_series":"","pos_num":"","date":"2026-08-08 12:20:00","decision":"","fine_imposed":0,"fine_collected":0},
             {"id":4,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":974045.0,"pos_series":"","pos_num":"","date":"2026-06-16 16:30:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":0},
-            {"id":5,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976506.0,"pos_series":"","pos_num":"","date":"2026-06-23 12:09:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":0},
-            // Завантажте повний експорт масиву за потреби, логіка нижче розраховує підсумки автоматично.
+            {"id":5,"officer":"АВРАМЕНКО","service":"ОФІЦЕР ГРОМАДИ","department":"ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.","article":"СТ.152 Порушення державних стандартів у сфері благоустрою нас.пунктів","p_series":"ВАД","p_num":976506.0,"pos_series":"","pos_num":"","date":"2026-06-23 12:09:00","decision":"НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП","fine_imposed":340.0,"fine_collected":0}
         ];
 
         let filteredData = [...rawData];
+        let rangePicker = null;
 
         document.addEventListener('DOMContentLoaded', () => {
             initCalendar();
@@ -370,34 +369,64 @@
         });
 
         function initCalendar() {
-            flatpickr("#dateFilter", {
+            // Ініціалізація вибору періоду "з - по" (mode: "range")
+            rangePicker = flatpickr("#dateRangeFilter", {
                 locale: "uk",
+                mode: "range",
                 dateFormat: "Y-m-d",
                 onChange: function(selectedDates, dateStr) {
-                    applyFilters();
+                    // Коли вибрано обидві дати або початкову точку
+                    if (selectedDates.length > 0) {
+                        applyFilters();
+                    }
                 }
             });
 
+            // Інтерактивний календар (натискання на день вибирає цей день як точковий фільтр)
             flatpickr("#inlineCalendar", {
                 locale: "uk",
                 inline: true,
                 dateFormat: "Y-m-d",
                 onChange: function(selectedDates, dateStr) {
-                    document.getElementById('dateFilter').value = dateStr;
-                    applyFilters();
+                    if(rangePicker) {
+                        rangePicker.setDate(dateStr, true);
+                    }
                 }
             });
         }
 
         function applyFilters() {
             const deptVal = document.getElementById('departmentFilter').value;
-            const dateVal = document.getElementById('dateFilter').value;
+            const dateRangeStr = document.getElementById('dateRangeFilter').value;
             const searchVal = document.getElementById('searchRecord').value.toLowerCase();
+
+            let startDate = null;
+            let endDate = null;
+
+            if (dateRangeStr.includes(' до ')) {
+                const parts = dateRangeStr.split(' до ');
+                startDate = parts[0].trim();
+                endDate = parts[1].trim();
+            } else if (dateRangeStr) {
+                startDate = dateRangeStr.trim();
+                endDate = startDate; // якщо вибрано лише один день
+            }
 
             filteredData = rawData.filter(item => {
                 const matchDept = (deptVal === 'ALL' || item.department === deptVal);
-                const matchDate = (!dateVal || item.date.startsWith(dateVal));
+                
+                let matchDate = true;
+                if (startDate) {
+                    const itemDateOnly = item.date.split(' ')[0];
+                    if (endDate) {
+                        matchDate = (itemDateOnly >= startDate && itemDateOnly <= endDate);
+                    } else {
+                        matchDate = itemDateOnly === startDate;
+                    }
+                }
+
                 const matchSearch = (!searchVal || item.officer.toLowerCase().includes(searchVal) || item.article.toLowerCase().includes(searchVal));
+                
                 return matchDept && matchDate && matchSearch;
             });
 
@@ -406,7 +435,7 @@
 
         function resetAllFilters() {
             document.getElementById('departmentFilter').value = 'ALL';
-            document.getElementById('dateFilter').value = '';
+            if(rangePicker) rangePicker.clear();
             document.getElementById('searchRecord').value = '';
             filteredData = [...rawData];
             updateDashboard(filteredData);
@@ -415,7 +444,6 @@
         function updateDashboard(data) {
             document.getElementById('statTotal').textContent = data.length;
             
-            // Точні підрахунки на основі даних таблиці
             const protocols = data.filter(i => i.p_num !== "" && i.p_num !== null).length;
             const decisions = data.filter(i => i.pos_num !== "" && i.pos_num !== null).length;
             const totalFinesCollected = data.reduce((acc, i) => acc + (Number(i.fine_collected) || 0), 0);
