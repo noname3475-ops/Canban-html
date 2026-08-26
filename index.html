@@ -326,15 +326,19 @@
 
         Chart.register(barValuePlugin);
 
-        // Повна база даних (всі 7390 записів із таблиці ПОГ адмін.xlsx)
+        // Повна база даних з Excel файлу
         const rawDatabase = [
-            { org: "ВІДДІЛ ПОЛІЦІЇ №1 (М.СКВИРА) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "СУХАЦЬКИЙ", date: "2026-04-15 14:21:11", article: "СТ.183", decision: "НАКЛАДЕНО СТЯГНЕННЯ ЗА СТ.КУПАП", fine: 850, collected: 0 },
-            { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "АВРАМЕНКО", date: "2026-08-08 12:20:00", article: "СТ.51", decision: "", fine: 0, collected: 0 },
-            { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №1 (СМТ РОКИТНЕ) БІЛОЦЕРКІВСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "АВРАМЕНКО", date: "2026-08-08 12:20:00", article: "СТ.51", decision: "", fine: 0, collected: 0 },
-            // Повний експортований масив з усіма записами бази
-            { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "ГАЛАНЗОВСЬКИЙ", date: "2026-02-10 10:15:00", article: "СТ.173", decision: "НАКЛАДЕНО СТЯГНЕННЯ", fine: 510, collected: 510 },
-            { org: "ВІДДІЛЕННЯ ПОЛІЦІЇ №2 (СМТ БОРОДЯНКА) БУЧАНСЬКОГО РАЙОННОГО УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛ.", officer: "ПОНОМАРЕНКО", date: "2026-03-12 12:00:00", article: "СТ.178", decision: "НАКЛАДЕНО СТЯГНЕННЯ", fine: 170, collected: 170 },
-            { org: "БІЛОЦЕРКІВСЬКЕ РАЙОННЕ УПРАВЛІННЯ ПОЛІЦІЇ ГУНП В КИЇВСЬКІЙ ОБЛАСТІ", officer: "ІЛЬЇН", date: "2026-02-06 10:15:00", article: "СТ.173", decision: "НАКЛАДЕНО СТЯГНЕННЯ", fine: 1190, collected: 850 }
+            {% for idx, row in df.iterrows() %}
+            {
+                date: "{{ row['Дата та час складання протоколу/постанови'].strftime('%Y-%m-%d %H:%M:%S') }}",
+                org: "{{ row['Орган'] | replace('"', '\\"') }}",
+                officer: "{{ row['Склав прізвище'] | replace('"', '\\"') }}",
+                article: "{{ row['Стаття КУпАП'] | replace('"', '\\"') }}",
+                fine: {{ row['Накладено штраф (грн)'] if pd.notnull(row['Накладено штраф (грн)']) else 0.0 }},
+                collected: {{ row['Стягнено штраф (грн)'] if pd.notnull(row['Стягнено штраф (грн)']) else 0.0 }},
+                decision: "{{ row['Прийняте рішення'] if pd.notnull(row['Прийняте рішення']) else '' }}"
+            },
+            {% endfor %}
         ];
 
         let timelineChartInstance = null;
@@ -345,9 +349,6 @@
         let currentFilteredRows = [];
 
         window.addEventListener('DOMContentLoaded', () => {
-            document.getElementById('globalDateFrom').value = "2026-01-01";
-            document.getElementById('globalDateTo').value = "2026-08-25";
-
             initChartsSkeleton();
             onGlobalFilterChange();
         });
@@ -494,13 +495,13 @@
         function initChartsSkeleton() {
             timelineChartInstance = new Chart(document.getElementById('overviewTimelineChart').getContext('2d'), {
                 type: 'line',
-                data: { labels: ['Січ', 'Лют', 'Бер', 'Квіт', 'Трав', 'Черв', 'Лип', 'Сер'], datasets: [{ data: [350, 420, 510, 480, 590, 550, 530, 490], borderColor: '#00f0ff', backgroundColor: 'rgba(0, 240, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
+                data: { labels: [], datasets: [{ data: [], borderColor: '#00f0ff', backgroundColor: 'rgba(0, 240, 255, 0.1)', borderWidth: 2, fill: true, tension: 0.3 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
             topUnitsChartInstance = new Chart(document.getElementById('overviewTopUnitsChart').getContext('2d'), {
                 type: 'bar',
-                data: { labels: ['Білоцерківське РУП', 'Яготинське ВП', 'Ірпінський ВП', 'Вишгородське РУП', 'Броварське РУП'], datasets: [{ data: [1431, 645, 491, 467, 417], backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6', '#ec4899'], borderRadius: 4 }] },
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f0ff', '#3b82f6', '#6366f1', '#8b5cf6', '#ec4899'], borderRadius: 4 }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
             });
 
@@ -529,20 +530,65 @@
 
             articlesChartInstance = new Chart(document.getElementById('articlesChart').getContext('2d'), {
                 type: 'doughnut',
-                data: { labels: ['Ст. 183', 'Ст. 51', 'Ст. 173', 'Ст. 152', 'Інші'], datasets: [{ data: [35, 30, 20, 10, 5], backgroundColor: ['#00f0ff', '#3b82f6', '#8b5cf6', '#10b981', '#1e293b'] }] },
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#00f0ff', '#3b82f6', '#8b5cf6', '#10b981', '#1e293b'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#8a99ad', boxWidth: 12 } } } }
             });
 
             decisionsChartInstance = new Chart(document.getElementById('decisionsChart').getContext('2d'), {
                 type: 'pie',
-                data: { labels: ['Накладено стягнення', 'Закрито / Без рішення', 'До суду'], datasets: [{ data: [65, 20, 15], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'] }] },
+                data: { labels: [], datasets: [{ data: [], backgroundColor: ['#10b981', '#f59e0b', '#ef4444'] }] },
                 options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { color: '#8a99ad', boxWidth: 12 } } } }
             });
         }
 
         function updateCharts(filtered, activeOfficers, activeCounts) {
+            // Timeline grouping by date
+            let timelineMap = {};
+            filtered.forEach(r => {
+                let dt = r.date.substring(0, 10);
+                timelineMap[dt] = (timelineMap[dt] || 0) + 1;
+            });
+            let sortedDates = Object.keys(timelineMap).sort();
+            timelineChartInstance.data.labels = sortedDates;
+            timelineChartInstance.data.datasets[0].data = sortedDates.map(d => timelineMap[d]);
+            timelineChartInstance.update();
+
+            // Top Units grouping
+            let unitMap = {};
+            filtered.forEach(r => {
+                let uName = r.org.length > 30 ? r.org.substring(0, 30) + '...' : r.org;
+                unitMap[uName] = (unitMap[uName] || 0) + 1;
+            });
+            let sortedUnits = Object.keys(unitMap).sort((a,b) => unitMap[b] - unitMap[a]).slice(0, 5);
+            topUnitsChartInstance.data.labels = sortedUnits;
+            topUnitsChartInstance.data.datasets[0].data = sortedUnits.map(u => unitMap[u]);
+            topUnitsChartInstance.update();
+
+            // Officers chart
             officersChartInstance.data.labels = activeOfficers;
             officersChartInstance.data.datasets[0].data = activeCounts;
             officersChartInstance.update();
+
+            // Articles chart
+            let articleMap = {};
+            filtered.forEach(r => {
+                let art = r.article.length > 25 ? r.article.substring(0, 25) + '...' : r.article;
+                articleMap[art] = (articleMap[art] || 0) + 1;
+            });
+            let sortedArticles = Object.keys(articleMap).sort((a,b) => articleMap[b] - articleMap[a]).slice(0, 5);
+            articlesChartInstance.data.labels = sortedArticles;
+            articlesChartInstance.data.datasets[0].data = sortedArticles.map(a => articleMap[a]);
+            articlesChartInstance.update();
+
+            // Decisions chart
+            let decisionMap = {};
+            filtered.forEach(r => {
+                let dec = r.decision ? r.decision : "НЕВИЗНАЧЕНО";
+                decisionMap[dec] = (decisionMap[dec] || 0) + 1;
+            });
+            let sortedDecisions = Object.keys(decisionMap);
+            decisionsChartInstance.data.labels = sortedDecisions;
+            decisionsChartInstance.data.datasets[0].data = sortedDecisions.map(d => decisionMap[d]);
+            decisionsChartInstance.update();
         }
     </script></body></html>
